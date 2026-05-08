@@ -1,0 +1,22 @@
+{
+  "hitting_streaks": {
+    "100": {
+      "name": "Babe Testman",
+      "team": "Yankees",
+      "streak": 1,
+      "last_date": "2026-05-04"
+    },
+    "101": {
+      "name": "Lou Gehrig Jr",
+      "team": "Yankees",
+      "streak": 1,
+      "last_date": "2026-05-04"
+    }
+  },
+  "no_hitter_teams": [
+    "Yankees"
+  ],
+  "season_firsts": {
+    "no_hitter": "2026-05-04"
+  }
+}

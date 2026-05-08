@@ -1,0 +1,47 @@
+name: Update Retrosheet Corpus
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: "First year to include"
+        default: "1918"
+      end_year:
+        description: "Last year to include"
+        default: "2024"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install chadwick
+        run: |
+          # chadwick is not in the Ubuntu apt repos — install from GitHub releases
+          CHADWICK_VERSION=0.10.0
+          curl -sSL "https://github.com/chadwickbureau/chadwick/releases/download/v${CHADWICK_VERSION}/chadwick-${CHADWICK_VERSION}-linux-x86_64.tar.gz" \
+            | sudo tar -xz -C /usr/local --strip-components=1
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build corpus
+        run: python highlights/corpus.py ${{ github.event.inputs.start_year }} ${{ github.event.inputs.end_year }}
+
+      - name: Commit corpus
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add retrosheet-patterns.parquet
+          git diff --staged --quiet || git commit -m "chore: update retrosheet corpus ${{ github.event.inputs.start_year }}-${{ github.event.inputs.end_year }}"
+          git push
