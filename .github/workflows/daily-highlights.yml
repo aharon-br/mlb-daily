@@ -35,8 +35,8 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          AI_SUMMARY: "true"
-          POST_TO_SLACK: "true"
+          AI_SUMMARY: "false"
+          POST_TO_SLACK: "false"
         run: python main.py
 
       - name: Commit daily recap and season ledger
