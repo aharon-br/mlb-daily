@@ -90,6 +90,7 @@ CWEVENT_EXTENDED = '19'   # pitcher is starter flag
 # ---- retrosheet EVENT_CD codes we care about --------------------------------
 EVENT_HR = 23          # home run (includes inside-the-park)
 EVENT_STRIKEOUT = 3    # strikeout
+EVENT_STOLEN_BASE = 4  # stolen base (a baserunning event, BAT_EVENT_FL == 'F')
 
 
 # ---- GitHub raw file URL base for Chadwick Bureau retrosheet mirror -----
@@ -373,16 +374,19 @@ def _extract_patterns_from_events(events, year):
         print(f'  year {year}: missing columns {missing}, skipping')
         return []
 
-    # keep only true batting events — drops baserunning rows that share a PA
-    batting = events[events['BAT_EVENT_FL'] == 'T'].copy()
-
-    # derive the batting team name from the home/away flag so downstream
-    # code doesn't have to think about it
-    batting['batting_team'] = batting.apply(_batting_team, axis=1)
-
+    # derive the helper columns on the FULL event set. stolen bases are
+    # baserunning events (BAT_EVENT_FL == 'F'), so _detect_stolen_base_burst
+    # needs rows that the batting-only filter below would drop — compute
+    # batting_team / date up front so both views share them.
+    events = events.copy()
+    # batting team from the home/away flag so downstream code doesn't have to.
+    events['batting_team'] = events.apply(_batting_team, axis=1)
     # extract the date from GAME_ID — format is like "ANA200304080"
     # characters at index 3-10 are YYYYMMDD. we convert to ISO string.
-    batting['date'] = batting['GAME_ID'].apply(_game_id_to_date)
+    events['date'] = events['GAME_ID'].apply(_game_id_to_date)
+
+    # keep only true batting events — drops baserunning rows that share a PA
+    batting = events[events['BAT_EVENT_FL'] == 'T']
 
     rows = []
     for game_id, game_df in batting.groupby('GAME_ID'):
@@ -391,6 +395,10 @@ def _extract_patterns_from_events(events, year):
         rows.extend(_detect_walk_off_grand_slam(game_df, game_id))
         rows.extend(_detect_immaculate_inning(game_df, game_id))
         rows.extend(_detect_position_player_pitching(game_df, game_id))
+
+    # stolen bases are NOT batting events, so scan the unfiltered set for them
+    for game_id, game_df in events.groupby('GAME_ID'):
+        rows.extend(_detect_stolen_base_burst(game_df, game_id))
 
     return rows
 
@@ -704,6 +712,45 @@ def _detect_position_player_pitching(game_df, game_id):
                             f'in {game_id}'),
             'game_id': game_id,
         })
+
+    return results
+
+
+def _detect_stolen_base_burst(game_df, game_id, threshold=4):
+    '''stolen_base_burst: one team swiped `threshold`+ bases in a single game.
+
+    IMPORTANT: stolen bases are baserunning events (BAT_EVENT_FL == 'F'), so
+    this detector must be fed the UNFILTERED game events — the BAT_EVENT_FL
+    == 'T' filter the other detectors rely on drops every steal. the caller in
+    _extract_patterns_from_events passes the full event set for exactly this.
+
+    mirrors the live tier-3 pattern in rarity._extract_patterns, which flags a
+    team that stole 4+ bases in a game. the runner who steals belongs to the
+    batting team, so we group steals by `batting_team`.
+
+    caveat: retrosheet records a double/triple steal as a single EVENT_CD==4
+    row, so this counts steal *events*, slightly undercounting the rare
+    multi-runner steal vs. the box-score "stolen bases" total the live side
+    reads. acceptable for a "4+ steals" rarity flag; revisit if exactness
+    matters (would need the per-runner SB flag fields from cwevent).
+    '''
+    results = []
+
+    event_cd = pd.to_numeric(game_df['EVENT_CD'], errors='coerce')
+    steals = game_df[event_cd == EVENT_STOLEN_BASE]
+    if steals.empty:
+        return results
+
+    for team, team_steals in steals.groupby('batting_team'):
+        count = len(team_steals)
+        if count >= threshold:
+            results.append({
+                'date': team_steals.iloc[0]['date'],
+                'team': team,
+                'pattern': 'stolen_base_burst',
+                'description': (f'{team}: {count} stolen bases in {game_id}'),
+                'game_id': game_id,
+            })
 
     return results
 

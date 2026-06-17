@@ -825,10 +825,10 @@ def _extract_patterns(box_scores):
             team_stats = side_data.get('teamStats', {})
 
             # stolen_base_burst: this team's batters stole 4+ bases.
-            # KNOWN NO-OP: corpus.py has no stolen_base_burst detector, so the
-            # parquet contains zero rows for it — tier 3's `prior` lookup is
-            # always empty and this never surfaces. left in place intentionally
-            # until a corpus detector is added and the parquet is rebuilt.
+            # corpus.py now has a matching _detect_stolen_base_burst detector,
+            # so this surfaces once the parquet is rebuilt (the committed file
+            # predates the detector and still has zero stolen_base_burst rows —
+            # rerun the update-corpus workflow to populate them).
             batting_stats = team_stats.get('batting', {})
             stolen_base_burst = batting_stats.get('stolenBases', 0)
             if stolen_base_burst >= 4 and team_abbrev:

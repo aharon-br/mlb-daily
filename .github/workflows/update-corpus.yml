@@ -27,15 +27,29 @@ jobs:
 
       - name: Install chadwick
         run: |
-          # chadwick is not in the Ubuntu apt repos — install from GitHub releases
+          # chadwick is not in the Ubuntu apt repos, and there is no prebuilt
+          # linux binary release asset (the old -linux-x86_64.tar.gz URL 404s).
+          # build from the source-dist tarball instead — it ships a generated
+          # ./configure, so no autotools are needed.
           CHADWICK_VERSION=0.10.0
-          curl -sSL "https://github.com/chadwickbureau/chadwick/releases/download/v${CHADWICK_VERSION}/chadwick-${CHADWICK_VERSION}-linux-x86_64.tar.gz" \
-            | sudo tar -xz -C /usr/local --strip-components=1
+          curl -sSL "https://github.com/chadwickbureau/chadwick/releases/download/v${CHADWICK_VERSION}/chadwick-${CHADWICK_VERSION}.tar.gz" \
+            | tar -xz
+          cd "chadwick-${CHADWICK_VERSION}"
+          ./configure --prefix=/usr/local
+          make
+          sudo make install
+          sudo ldconfig   # so cwevent can find libchadwick.so at runtime
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Build corpus
+        # corpus.py lists each season directory through the GitHub contents API,
+        # which is rate-limited to 60 req/hr unauthenticated — far fewer than the
+        # ~107 seasons a full rebuild walks. pass the token so it gets the 5000/hr
+        # authenticated limit (corpus.py reads it from GH_TOKEN).
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python highlights/corpus.py ${{ github.event.inputs.start_year }} ${{ github.event.inputs.end_year }}
 
       - name: Commit corpus
