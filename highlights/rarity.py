@@ -50,6 +50,58 @@ import os
 import pandas
 
 
+# ---- tier 3 lookup tables ---------------------------------------------------
+# the corpus (retrosheet-patterns.parquet) keys teams by RETROSHEET franchise
+# code (derived from GAME_ID, e.g. "NYA", "CHN", "LAN"). live box scores key
+# teams by MLB StatsAPI abbreviation (e.g. "NYY", "CHC", "LAD"). these are two
+# different vocabularies, so a raw `corpus.team == box_abbrev` join silently
+# misses ~1/3 of franchises — every Yankees/Dodgers/Cubs/Mets/Cardinals/Giants
+# game would never match. map StatsAPI abbrevs -> current-franchise retrosheet
+# codes so tier 3 can actually find the history. codes that are already
+# identical (BOS, HOU, ATL, ...) fall through via _to_retrosheet_code's default.
+_STATSAPI_TO_RETROSHEET = {
+    'NYY': 'NYA',  # Yankees
+    'NYM': 'NYN',  # Mets
+    'CHC': 'CHN',  # Cubs
+    'CWS': 'CHA',  # White Sox
+    'LAD': 'LAN',  # Dodgers
+    'LAA': 'ANA',  # Angels (current franchise code in corpus)
+    'STL': 'SLN',  # Cardinals
+    'SF':  'SFN',  # Giants
+    'SD':  'SDN',  # Padres
+    'KC':  'KCA',  # Royals
+    'TB':  'TBA',  # Rays
+    'WSH': 'WAS',  # Nationals (current era; Montreal "MON" intentionally excluded)
+    'MIA': 'FLO',  # Marlins (corpus uses the original "FLO" franchise code)
+    'AZ':  'ARI',  # Diamondbacks (StatsAPI sometimes emits "AZ")
+    'ATH': 'OAK',  # Athletics (post-relocation StatsAPI code; corpus is "OAK")
+}
+
+# per-pattern minimum gap (in days) before tier 3 surfaces a "first time since"
+# fact. one flat 5-year cutoff suppressed nearly everything: a given team hits
+# back-to-back HRs every ~3 weeks in season, so those gaps never clear 5 years.
+# tune per pattern — rarer events keep a long fuse, common ones a shorter one.
+# patterns not listed fall back to _DEFAULT_MIN_GAP_DAYS.
+_DEFAULT_MIN_GAP_DAYS = 365 * 5
+_PATTERN_MIN_GAP_DAYS = {
+    'back_to_back_hr_inning':   365 * 3,  # common; only long team droughts read as rare
+    'three_hr_inning':          365 * 2,
+    'walk_off_grand_slam':      365 * 3,
+    'immaculate_inning':        365 * 5,  # genuinely rare, keep the long fuse
+    'position_player_pitching': 365 * 3,
+    'stolen_base_burst':        365 * 2,  # note: no corpus detector yet (see _extract_patterns)
+}
+
+
+def _to_retrosheet_code(abbrev):
+    '''map a StatsAPI team abbreviation to its retrosheet franchise code.
+
+    falls back to the abbreviation unchanged when the two already agree
+    (BOS, HOU, ATL, ...), so the corpus join works for all 30 clubs.
+    '''
+    return _STATSAPI_TO_RETROSHEET.get(abbrev, abbrev)
+
+
 def find_rare_events(box_scores, target_date):
     '''entry point. returns a flat list of verified rare event dicts.
 
@@ -98,18 +150,26 @@ def find_rare_events(box_scores, target_date):
         corpus = _load_pattern_corpus()  # get pandas to read and return the corpus
         patterns = _extract_patterns(box_scores)
         for pattern in patterns:
+            # normalize the StatsAPI abbrev to the retrosheet code the corpus
+            # is keyed by, otherwise mismatched franchises never join (#1 cause
+            # of tier 3 going silent — see _STATSAPI_TO_RETROSHEET).
+            retro_team = _to_retrosheet_code(pattern['team'])
             # find all prior occurrences of this exact pattern for this team
             prior = corpus[
-                (corpus.team == pattern['team']) &
+                (corpus.team == retro_team) &
                 (corpus.pattern == pattern['pattern']) &
                 (corpus.date < target_date)
             ]
             if not prior.empty:
                 last_seen = prior.date.max()
                 gap = (target_date - last_seen).days
-                # 5 years == ~1825 days — anything shorter isn't really rare.
-                # we don't want to surface "first time since last tuesday."
-                if gap > 365 * 5:
+                # per-pattern fuse: a flat 5-year cutoff suppressed almost
+                # everything since common patterns recur far more often than
+                # that. >= so an exactly-on-the-threshold gap still surfaces.
+                min_gap = _PATTERN_MIN_GAP_DAYS.get(
+                    pattern['pattern'], _DEFAULT_MIN_GAP_DAYS
+                )
+                if gap >= min_gap:
                     events.append({
                         'kind': pattern['pattern'],
                         'label': pattern['label'],
@@ -764,7 +824,11 @@ def _extract_patterns(box_scores):
             team_name = side_data.get('team', {}).get('name', team_abbrev)
             team_stats = side_data.get('teamStats', {})
 
-            # stolen_base_burst: this team's batters stole 4+ bases
+            # stolen_base_burst: this team's batters stole 4+ bases.
+            # KNOWN NO-OP: corpus.py has no stolen_base_burst detector, so the
+            # parquet contains zero rows for it — tier 3's `prior` lookup is
+            # always empty and this never surfaces. left in place intentionally
+            # until a corpus detector is added and the parquet is rebuilt.
             batting_stats = team_stats.get('batting', {})
             stolen_base_burst = batting_stats.get('stolenBases', 0)
             if stolen_base_burst >= 4 and team_abbrev:
