@@ -15,14 +15,14 @@
     "607043": {
       "name": "Brandon Nimmo",
       "team": "Rangers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "677649": {
       "name": "Ezequiel Duran",
       "team": "Rangers",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "608369": {
       "name": "Corey Seager",
@@ -33,14 +33,14 @@
     "673962": {
       "name": "Josh Jung",
       "team": "Rangers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "592626": {
       "name": "Joc Pederson",
       "team": "Rangers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "457705": {
       "name": "Andrew McCutchen",
@@ -52,13 +52,13 @@
       "name": "Jake Burger",
       "team": "Rangers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "694497": {
       "name": "Evan Carter",
       "team": "Rangers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "643376": {
       "name": "Danny Jansen",
@@ -69,8 +69,8 @@
     "679822": {
       "name": "Justin Foscue",
       "team": "Rangers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "664059": {
       "name": "Sam Haggerty",
@@ -81,8 +81,8 @@
     "502671": {
       "name": "Paul Goldschmidt",
       "team": "Yankees",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "592450": {
       "name": "Aaron Judge",
@@ -93,44 +93,44 @@
     "641355": {
       "name": "Cody Bellinger",
       "team": "Yankees",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "642708": {
       "name": "Amed Rosario",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-07-10"
+      "last_date": "2026-07-12"
     },
     "676609": {
       "name": "Jos\u00e9 Caballero",
       "team": "Yankees",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "665862": {
       "name": "Jazz Chisholm Jr.",
       "team": "Yankees",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "641857": {
       "name": "Ryan McMahon",
       "team": "Yankees",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "663757": {
       "name": "Trent Grisham",
       "team": "Yankees",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "680474": {
       "name": "Max Schuemann",
       "team": "Yankees",
-      "streak": 1,
-      "last_date": "2026-07-09"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "641555": {
       "name": "J.C. Escarra",
@@ -147,8 +147,8 @@
     "663616": {
       "name": "Trevor Larnach",
       "team": "Twins",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "668885": {
       "name": "Austin Martin",
@@ -159,8 +159,8 @@
     "680777": {
       "name": "Ryan Jeffers",
       "team": "Twins",
-      "streak": 4,
-      "last_date": "2026-07-10"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "670242": {
       "name": "Matt Wallner",
@@ -171,26 +171,26 @@
     "605137": {
       "name": "Josh Bell",
       "team": "Twins",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "681546": {
       "name": "James Outman",
       "team": "Tigers",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "807712": {
       "name": "Luke Keaschall",
       "team": "Twins",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "665019": {
       "name": "Kody Clemens",
       "team": "Twins",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "605170": {
       "name": "Victor Caratini",
@@ -202,7 +202,7 @@
       "name": "Brooks Lee",
       "team": "Twins",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "656484": {
       "name": "Tristan Gray",
@@ -213,26 +213,26 @@
     "695578": {
       "name": "James Wood",
       "team": "Nationals",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "695734": {
       "name": "Daylen Lile",
       "team": "Nationals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "678554": {
       "name": "Curtis Mead",
       "team": "Nationals",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "682928": {
       "name": "CJ Abrams",
       "team": "Nationals",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 7,
+      "last_date": "2026-07-12"
     },
     "691781": {
       "name": "Brady House",
@@ -243,8 +243,8 @@
     "677588": {
       "name": "Jos\u00e9 Tena",
       "team": "Nationals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "696285": {
       "name": "Jacob Young",
@@ -255,26 +255,26 @@
     "660688": {
       "name": "Keibert Ruiz",
       "team": "Nationals",
-      "streak": 2,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "683083": {
       "name": "Nasim Nu\u00f1ez",
       "team": "Nationals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "680757": {
       "name": "Steven Kwan",
       "team": "Guardians",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "800050": {
       "name": "Chase DeLauter",
       "team": "Guardians",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "608070": {
       "name": "Jos\u00e9 Ram\u00edrez",
@@ -285,8 +285,8 @@
     "700932": {
       "name": "Kyle Manzardo",
       "team": "Guardians",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "682177": {
       "name": "Daniel Schneemann",
@@ -297,14 +297,14 @@
     "683953": {
       "name": "Travis Bazzana",
       "team": "Guardians",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "677587": {
       "name": "Brayan Rocchio",
       "team": "Guardians",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "666310": {
       "name": "Bo Naylor",
@@ -315,8 +315,8 @@
     "690984": {
       "name": "Petey Halpin",
       "team": "Guardians",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "672580": {
       "name": "Maikel Garcia",
@@ -327,44 +327,44 @@
     "677951": {
       "name": "Bobby Witt Jr.",
       "team": "Royals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "686469": {
       "name": "Vinnie Pasquantino",
       "team": "Royals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "521692": {
       "name": "Salvador Perez",
       "team": "Royals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "695600": {
       "name": "Carter Jensen",
       "team": "Royals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "695506": {
       "name": "Jac Caglianone",
       "team": "Royals",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 7,
+      "last_date": "2026-07-12"
     },
     "686555": {
       "name": "Isaac Collins",
       "team": "Royals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "686681": {
       "name": "Michael Massey",
       "team": "Royals",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "679845": {
       "name": "Nick Loftin",
@@ -393,32 +393,32 @@
     "682829": {
       "name": "Elly De La Cruz",
       "team": "Reds",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "701398": {
       "name": "Sal Stewart",
       "team": "Reds",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "668715": {
       "name": "Spencer Steer",
       "team": "Reds",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "663886": {
       "name": "Tyler Stephenson",
       "team": "Reds",
-      "streak": 5,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "668709": {
       "name": "JJ Bleday",
       "team": "Reds",
-      "streak": 5,
-      "last_date": "2026-07-11"
+      "streak": 6,
+      "last_date": "2026-07-12"
     },
     "694362": {
       "name": "Blake Dunn",
@@ -429,8 +429,8 @@
     "663647": {
       "name": "Ke'Bryan Hayes",
       "team": "Reds",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "663993": {
       "name": "Nathaniel Lowe",
@@ -442,7 +442,7 @@
       "name": "Nico Hoerner",
       "team": "Cubs",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "694208": {
       "name": "Mois\u00e9s Ballesteros",
@@ -453,20 +453,20 @@
     "608324": {
       "name": "Alex Bregman",
       "team": "Cubs",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "664023": {
       "name": "Ian Happ",
       "team": "Cubs",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "683737": {
       "name": "Michael Busch",
       "team": "Cubs",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "624424": {
       "name": "Michael Conforto",
@@ -477,14 +477,14 @@
     "621020": {
       "name": "Dansby Swanson",
       "team": "Cubs",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "691718": {
       "name": "Pete Crow-Armstrong",
       "team": "Cubs",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "665804": {
       "name": "Miguel Amaya",
@@ -496,13 +496,13 @@
       "name": "Juan Soto",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "666182": {
       "name": "Bo Bichette",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-09"
+      "last_date": "2026-07-12"
     },
     "668901": {
       "name": "Mark Vientos",
@@ -520,7 +520,7 @@
       "name": "Brett Baty",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "543760": {
       "name": "Marcus Semien",
@@ -538,7 +538,7 @@
       "name": "Carson Benge",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "682626": {
       "name": "Francisco Alvarez",
@@ -549,8 +549,8 @@
     "621438": {
       "name": "Tyrone Taylor",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "669004": {
       "name": "MJ Melendez",
@@ -573,26 +573,26 @@
     "666160": {
       "name": "Mickey Moniak",
       "team": "Rockies",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "671289": {
       "name": "Tyler Freeman",
       "team": "Rockies",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "681198": {
       "name": "TJ Rumfield",
       "team": "Rockies",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "687859": {
       "name": "Troy Johnston",
       "team": "Rockies",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "650489": {
       "name": "Willi Castro",
@@ -603,14 +603,14 @@
     "664983": {
       "name": "Jake McCarthy",
       "team": "Rockies",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "691720": {
       "name": "Kyle Karros",
       "team": "Rockies",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "664954": {
       "name": "Brett Sullivan",
@@ -627,20 +627,20 @@
     "664040": {
       "name": "Brandon Lowe",
       "team": "Pirates",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "668804": {
       "name": "Bryan Reynolds",
       "team": "Pirates",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "656811": {
       "name": "Ryan O'Hearn",
       "team": "Pirates",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "687462": {
       "name": "Spencer Horwitz",
@@ -657,14 +657,14 @@
     "669707": {
       "name": "Jared Triolo",
       "team": "Pirates",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "695257": {
       "name": "Billy Cook",
       "team": "Pirates",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "663698": {
       "name": "Joey Bart",
@@ -676,19 +676,19 @@
       "name": "Geraldo Perdomo",
       "team": "D-backs",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "606466": {
       "name": "Ketel Marte",
       "team": "D-backs",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "682998": {
       "name": "Corbin Carroll",
       "team": "D-backs",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "680728": {
       "name": "Adrian Del Castillo",
@@ -699,14 +699,14 @@
     "571448": {
       "name": "Nolan Arenado",
       "team": "D-backs",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "545121": {
       "name": "Ildemaro Vargas",
       "team": "D-backs",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "699912": {
       "name": "Jose Fernandez",
@@ -729,8 +729,8 @@
     "672515": {
       "name": "Gabriel Moreno",
       "team": "D-backs",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 7,
+      "last_date": "2026-07-12"
     },
     "677950": {
       "name": "Alek Thomas",
@@ -741,8 +741,8 @@
     "694374": {
       "name": "Tim Tawa",
       "team": "D-backs",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "701762": {
       "name": "Nick Kurtz",
@@ -753,8 +753,8 @@
     "669127": {
       "name": "Shea Langeliers",
       "team": "Athletics",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "691016": {
       "name": "Tyler Soderstrom",
@@ -771,14 +771,14 @@
     "666126": {
       "name": "Carlos Cortes",
       "team": "Athletics",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "805779": {
       "name": "Jacob Wilson",
       "team": "Athletics",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "695391": {
       "name": "Brett Harris",
@@ -790,7 +790,7 @@
       "name": "Lawrence Butler",
       "team": "Athletics",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "680869": {
       "name": "Zack Gelof",
@@ -807,8 +807,8 @@
     "607208": {
       "name": "Trea Turner",
       "team": "Phillies",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "596117": {
       "name": "Garrett Stubbs",
@@ -819,14 +819,14 @@
     "656941": {
       "name": "Kyle Schwarber",
       "team": "Phillies",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "547180": {
       "name": "Bryce Harper",
       "team": "Phillies",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "694025": {
       "name": "Felix Reyes",
@@ -844,19 +844,19 @@
       "name": "Brandon Marsh",
       "team": "Phillies",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "681082": {
       "name": "Bryson Stott",
       "team": "Phillies",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "624641": {
       "name": "Edmundo Sosa",
       "team": "Phillies",
-      "streak": 2,
-      "last_date": "2026-07-08"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "702222": {
       "name": "Justin Crawford",
@@ -873,44 +873,44 @@
     "683002": {
       "name": "Gunnar Henderson",
       "team": "Orioles",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "621493": {
       "name": "Taylor Ward",
       "team": "Orioles",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "687637": {
       "name": "Dylan Beavers",
       "team": "Orioles",
-      "streak": 2,
-      "last_date": "2026-07-10"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "624413": {
       "name": "Pete Alonso",
       "team": "Orioles",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "694212": {
       "name": "Samuel Basallo",
       "team": "Orioles",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "641933": {
       "name": "Tyler O'Neill",
       "team": "Orioles",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "681297": {
       "name": "Colton Cowser",
       "team": "Orioles",
       "streak": 0,
-      "last_date": "2026-07-10"
+      "last_date": "2026-07-12"
     },
     "691723": {
       "name": "Coby Mayo",
@@ -921,14 +921,14 @@
     "669236": {
       "name": "Jeremiah Jackson",
       "team": "Orioles",
-      "streak": 1,
-      "last_date": "2026-07-09"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "672640": {
       "name": "Otto Lopez",
       "team": "Marlins",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "681393": {
       "name": "Connor Norby",
@@ -939,14 +939,14 @@
     "669364": {
       "name": "Xavier Edwards",
       "team": "Marlins",
-      "streak": 7,
-      "last_date": "2026-07-11"
+      "streak": 8,
+      "last_date": "2026-07-12"
     },
     "689414": {
       "name": "Liam Hicks",
       "team": "Marlins",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "666624": {
       "name": "Christopher Morel",
@@ -957,50 +957,50 @@
     "681715": {
       "name": "Heriberto Hern\u00e1ndez",
       "team": "Marlins",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "665923": {
       "name": "Esteury Ruiz",
       "team": "Marlins",
-      "streak": 2,
-      "last_date": "2026-07-09"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "669065": {
       "name": "Kyle Stowers",
       "team": "Marlins",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "805300": {
       "name": "Jakob Marsee",
       "team": "Marlins",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "677870": {
       "name": "Leo Jim\u00e9nez",
       "team": "Marlins",
-      "streak": 3,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "691788": {
       "name": "Joe Mack",
       "team": "Marlins",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "691594": {
       "name": "Javier Sanoja",
       "team": "Marlins",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "650490": {
       "name": "Yandy D\u00edaz",
       "team": "Rays",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "668723": {
       "name": "Ryan Vilade",
@@ -1011,20 +1011,20 @@
     "676439": {
       "name": "Hunter Feduccia",
       "team": "Rays",
-      "streak": 2,
-      "last_date": "2026-07-10"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "691406": {
       "name": "Junior Caminero",
       "team": "Rays",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "666018": {
       "name": "Jonathan Aranda",
       "team": "Rays",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "676356": {
       "name": "Jonny DeLuca",
@@ -1047,26 +1047,26 @@
     "802415": {
       "name": "Chandler Simpson",
       "team": "Rays",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "656775": {
       "name": "Cedric Mullins",
       "team": "Rays",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "670764": {
       "name": "Taylor Walls",
       "team": "Rays",
       "streak": 0,
-      "last_date": "2026-07-10"
+      "last_date": "2026-07-12"
     },
     "680776": {
       "name": "Jarren Duran",
       "team": "Red Sox",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "575929": {
       "name": "Willson Contreras",
@@ -1078,7 +1078,7 @@
       "name": "Wilyer Abreu",
       "team": "Red Sox",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "596115": {
       "name": "Trevor Story",
@@ -1089,14 +1089,14 @@
     "807799": {
       "name": "Masataka Yoshida",
       "team": "Red Sox",
-      "streak": 7,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "678882": {
       "name": "Ceddanne Rafaela",
       "team": "Red Sox",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "691785": {
       "name": "Marcelo Mayer",
@@ -1107,38 +1107,38 @@
     "657136": {
       "name": "Connor Wong",
       "team": "Red Sox",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "702332": {
       "name": "Caleb Durbin",
       "team": "Red Sox",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "802139": {
       "name": "JJ Wetherholt",
       "team": "Cardinals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "671056": {
       "name": "Iv\u00e1n Herrera",
       "team": "Cardinals",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "676475": {
       "name": "Alec Burleson",
       "team": "Cardinals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "691023": {
       "name": "Jordan Walker",
       "team": "Cardinals",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 7,
+      "last_date": "2026-07-12"
     },
     "669357": {
       "name": "Nolan Gorman",
@@ -1149,14 +1149,14 @@
     "691026": {
       "name": "Masyn Winn",
       "team": "Cardinals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "701675": {
       "name": "Nathan Church",
       "team": "Cardinals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "686780": {
       "name": "Pedro Pag\u00e9s",
@@ -1173,8 +1173,8 @@
     "701538": {
       "name": "Jackson Merrill",
       "team": "Padres",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "609280": {
       "name": "Miguel Andujar",
@@ -1185,20 +1185,20 @@
     "592518": {
       "name": "Manny Machado",
       "team": "Padres",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "665487": {
       "name": "Fernando Tatis Jr.",
       "team": "Padres",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "593428": {
       "name": "Xander Bogaerts",
       "team": "Padres",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "657656": {
       "name": "Ram\u00f3n Laureano",
@@ -1209,8 +1209,8 @@
     "664034": {
       "name": "Ty France",
       "team": "Padres",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "592206": {
       "name": "Nick Castellanos",
@@ -1221,26 +1221,26 @@
     "660710": {
       "name": "Rodolfo Dur\u00e1n",
       "team": "Padres",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "514888": {
       "name": "Jose Altuve",
       "team": "Astros",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "669699": {
       "name": "Braden Shewmake",
-      "team": "Astros",
-      "streak": 1,
-      "last_date": "2026-07-06"
+      "team": "Brewers",
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "670541": {
       "name": "Yordan Alvarez",
       "team": "Astros",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "694376": {
       "name": "Shay Whitcomb",
@@ -1251,20 +1251,20 @@
     "670623": {
       "name": "Isaac Paredes",
       "team": "Astros",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "572233": {
       "name": "Christian Walker",
       "team": "Astros",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "701358": {
       "name": "Cam Smith",
       "team": "Astros",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "694728": {
       "name": "Brice Matthews",
@@ -1275,8 +1275,8 @@
     "701305": {
       "name": "Zach Dezenzo",
       "team": "Astros",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "805904": {
       "name": "Zach Cole",
@@ -1287,8 +1287,8 @@
     "543877": {
       "name": "Christian V\u00e1zquez",
       "team": "Astros",
-      "streak": 5,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "669397": {
       "name": "Nick Allen",
@@ -1317,8 +1317,8 @@
     "696100": {
       "name": "Hunter Goodman",
       "team": "Rockies",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "686668": {
       "name": "Brenton Doyle",
@@ -1330,13 +1330,13 @@
       "name": "Ezequiel Tovar",
       "team": "Rockies",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "592663": {
       "name": "J.T. Realmuto",
       "team": "Phillies",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "668939": {
       "name": "Adley Rutschman",
@@ -1347,38 +1347,38 @@
     "665750": {
       "name": "Leody Taveras",
       "team": "Orioles",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "642215": {
       "name": "Weston Wilson",
       "team": "Mariners",
-      "streak": 0,
-      "last_date": "2026-07-04"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "687263": {
       "name": "Zach Neto",
       "team": "Angels",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "545361": {
       "name": "Mike Trout",
       "team": "Angels",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "694384": {
       "name": "Nolan Schanuel",
       "team": "Angels",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "624585": {
       "name": "Jorge Soler",
       "team": "Angels",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "660162": {
       "name": "Yo\u00e1n Moncada",
@@ -1390,13 +1390,13 @@
       "name": "Jo Adell",
       "team": "Angels",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "666139": {
       "name": "Josh Lowe",
       "team": "Angels",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "665861": {
       "name": "Sebasti\u00e1n Rivero",
@@ -1425,8 +1425,8 @@
     "664702": {
       "name": "Myles Straw",
       "team": "Blue Jays",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "682818": {
       "name": "Yohendrick Pi\u00f1ango",
@@ -1437,26 +1437,26 @@
     "665489": {
       "name": "Vladimir Guerrero Jr.",
       "team": "Blue Jays",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "672960": {
       "name": "Kazuma Okamoto",
       "team": "Blue Jays",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "662139": {
       "name": "Daulton Varsho",
       "team": "Blue Jays",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "676391": {
       "name": "Ernie Clement",
       "team": "Blue Jays",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 7,
+      "last_date": "2026-07-12"
     },
     "676914": {
       "name": "Davis Schneider",
@@ -1473,14 +1473,14 @@
     "665926": {
       "name": "Andr\u00e9s Gim\u00e9nez",
       "team": "Blue Jays",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "678218": {
       "name": "Brandon Valenzuela",
       "team": "Blue Jays",
-      "streak": 1,
-      "last_date": "2026-07-07"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "665966": {
       "name": "Carlos Narv\u00e1ez",
@@ -1497,14 +1497,14 @@
     "671277": {
       "name": "Luis Garc\u00eda Jr.",
       "team": "Nationals",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "668904": {
       "name": "Royce Lewis",
       "team": "Twins",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "682657": {
       "name": "Angel Mart\u00ednez",
@@ -1533,20 +1533,20 @@
     "663837": {
       "name": "Matt Vierling",
       "team": "Tigers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "681481": {
       "name": "Kerry Carpenter",
       "team": "Tigers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "805808": {
       "name": "Kevin McGonigle",
       "team": "Tigers",
-      "streak": 6,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "663330": {
       "name": "Jahmai Jones",
@@ -1558,19 +1558,19 @@
       "name": "Colt Keith",
       "team": "Tigers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "693307": {
       "name": "Dillon Dingler",
       "team": "Tigers",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "682985": {
       "name": "Riley Greene",
       "team": "Tigers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "672761": {
       "name": "Wenceel P\u00e9rez",
@@ -1582,7 +1582,7 @@
       "name": "Spencer Torkelson",
       "team": "Tigers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "701678": {
       "name": "Hao-Yu Lee",
@@ -1593,20 +1593,20 @@
     "656716": {
       "name": "Zach McKinstry",
       "team": "Tigers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "670097": {
       "name": "Zack Short",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "657041": {
       "name": "Lane Thomas",
       "team": "Royals",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "680977": {
       "name": "Brendan Donovan",
@@ -1617,8 +1617,8 @@
     "663728": {
       "name": "Cal Raleigh",
       "team": "Mariners",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "677594": {
       "name": "Julio Rodr\u00edguez",
@@ -1629,20 +1629,20 @@
     "647304": {
       "name": "Josh Naylor",
       "team": "Mariners",
-      "streak": 7,
-      "last_date": "2026-07-11"
+      "streak": 8,
+      "last_date": "2026-07-12"
     },
     "668227": {
       "name": "Randy Arozarena",
       "team": "Mariners",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "641487": {
       "name": "J.P. Crawford",
       "team": "Mariners",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "670042": {
       "name": "Luke Raley",
@@ -1665,14 +1665,14 @@
     "702284": {
       "name": "Cole Young",
       "team": "Mariners",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "803011": {
       "name": "Sam Antonacci",
       "team": "White Sox",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "545341": {
       "name": "Randal Grichuk",
@@ -1684,31 +1684,31 @@
       "name": "Munetaka Murakami",
       "team": "White Sox",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "678246": {
       "name": "Miguel Vargas",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "695657": {
       "name": "Colson Montgomery",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "805367": {
       "name": "Chase Meidroth",
       "team": "White Sox",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "643217": {
       "name": "Andrew Benintendi",
       "team": "White Sox",
-      "streak": 2,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "672284": {
       "name": "Jarred Kelenic",
@@ -1719,8 +1719,8 @@
     "671976": {
       "name": "Tristan Peters",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "691011": {
       "name": "Drew Romo",
@@ -1731,8 +1731,8 @@
     "700250": {
       "name": "Ben Rice",
       "team": "Yankees",
-      "streak": 7,
-      "last_date": "2026-07-11"
+      "streak": 8,
+      "last_date": "2026-07-12"
     },
     "682987": {
       "name": "Spencer Jones",
@@ -1743,20 +1743,20 @@
     "669224": {
       "name": "Austin Wells",
       "team": "Yankees",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "694192": {
       "name": "Jackson Chourio",
       "team": "Brewers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "668930": {
       "name": "Brice Turang",
       "team": "Brewers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "661388": {
       "name": "William Contreras",
@@ -1767,14 +1767,14 @@
     "596142": {
       "name": "Gary S\u00e1nchez",
       "team": "Brewers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "683734": {
       "name": "Andrew Vaughn",
       "team": "Brewers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "650859": {
       "name": "Luis Rengifo",
@@ -1791,32 +1791,32 @@
     "669003": {
       "name": "Garrett Mitchell",
       "team": "Brewers",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "686217": {
       "name": "Sal Frelick",
       "team": "Brewers",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "687401": {
       "name": "Joey Ortiz",
       "team": "Brewers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "673548": {
       "name": "Seiya Suzuki",
       "team": "Cubs",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "608348": {
       "name": "Carson Kelly",
       "team": "Cubs",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "696030": {
       "name": "Alejandro Osuna",
@@ -1827,20 +1827,20 @@
     "620443": {
       "name": "Luis Torrens",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-09"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "814439": {
       "name": "Ryan Waldschmidt",
       "team": "D-backs",
       "streak": 0,
-      "last_date": "2026-07-10"
+      "last_date": "2026-07-12"
     },
     "666971": {
       "name": "Lourdes Gurriel Jr.",
       "team": "D-backs",
       "streak": 0,
-      "last_date": "2026-07-10"
+      "last_date": "2026-07-12"
     },
     "693409": {
       "name": "C\u00e9sar Prieto",
@@ -1852,7 +1852,7 @@
       "name": "Gavin Sheets",
       "team": "Padres",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "666023": {
       "name": "Freddy Fermin",
@@ -1863,50 +1863,50 @@
     "823550": {
       "name": "Sung-Mun Song",
       "team": "Padres",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "686948": {
       "name": "Drake Baldwin",
       "team": "Braves",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "645277": {
       "name": "Ozzie Albies",
       "team": "Braves",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "621566": {
       "name": "Matt Olson",
       "team": "Braves",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "671739": {
       "name": "Michael Harris II",
       "team": "Braves",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "643289": {
       "name": "Mauricio Dub\u00f3n",
       "team": "Braves",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "642086": {
       "name": "Dominic Smith",
       "team": "Braves",
       "streak": 0,
-      "last_date": "2026-07-10"
+      "last_date": "2026-07-12"
     },
     "663586": {
       "name": "Austin Riley",
       "team": "Braves",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "573262": {
       "name": "Mike Yastrzemski",
@@ -1917,8 +1917,8 @@
     "805347": {
       "name": "Jim Jarvis",
       "team": "Braves",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "571657": {
       "name": "Kyle Farmer",
@@ -1929,8 +1929,8 @@
     "660271": {
       "name": "Shohei Ohtani",
       "team": "Dodgers",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "669257": {
       "name": "Will Smith",
@@ -1941,26 +1941,26 @@
     "518692": {
       "name": "Freddie Freeman",
       "team": "Dodgers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "681624": {
       "name": "Andy Pages",
       "team": "Dodgers",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "606192": {
       "name": "Teoscar Hern\u00e1ndez",
       "team": "Dodgers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "663656": {
       "name": "Kyle Tucker",
       "team": "Dodgers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "500743": {
       "name": "Miguel Rojas",
@@ -1972,7 +1972,7 @@
       "name": "Max Muncy",
       "team": "Dodgers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "669289": {
       "name": "Santiago Espinal",
@@ -1983,14 +1983,14 @@
     "693304": {
       "name": "Nick Gonzales",
       "team": "Pirates",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "542303": {
       "name": "Marcell Ozuna",
       "team": "Pirates",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "694377": {
       "name": "Nick Yorke",
@@ -2002,25 +2002,25 @@
       "name": "Jung Hoo Lee",
       "team": "Giants",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "650333": {
       "name": "Luis Arraez",
       "team": "Giants",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "669477": {
       "name": "Casey Schmitt",
       "team": "Giants",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "646240": {
       "name": "Rafael Devers",
       "team": "Giants",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "656305": {
       "name": "Matt Chapman",
@@ -2031,20 +2031,20 @@
     "642715": {
       "name": "Willy Adames",
       "team": "Giants",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "671218": {
       "name": "Heliot Ramos",
       "team": "Giants",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "687551": {
       "name": "Drew Gilbert",
       "team": "Giants",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "683679": {
       "name": "Jesus Rodriguez",
@@ -2061,8 +2061,8 @@
     "672724": {
       "name": "Oswald Peraza",
       "team": "Angels",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "683079": {
       "name": "Omar Martinez",
@@ -2092,7 +2092,7 @@
       "name": "Colby Thomas",
       "team": "Athletics",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "624431": {
       "name": "Jose Trevino",
@@ -2104,7 +2104,7 @@
       "name": "Jorbit Vivas",
       "team": "Nationals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "686452": {
       "name": "Drew Millas",
@@ -2121,14 +2121,14 @@
     "664761": {
       "name": "Alec Bohm",
       "team": "Phillies",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "670032": {
       "name": "Nicky Lopez",
       "team": "Rangers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "807713": {
       "name": "Matt Shaw",
@@ -2139,8 +2139,8 @@
     "543309": {
       "name": "Kyle Higashioka",
       "team": "Rangers",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "668670": {
       "name": "Jake Rogers",
@@ -2152,7 +2152,7 @@
       "name": "Mitch Garver",
       "team": "Mariners",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "660844": {
       "name": "Leo Rivas",
@@ -2169,8 +2169,8 @@
     "641343": {
       "name": "Jake Bauers",
       "team": "Brewers",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "672012": {
       "name": "Tyler Black",
@@ -2199,8 +2199,8 @@
     "665877": {
       "name": "Jos\u00e9 Ferm\u00edn",
       "team": "Cardinals",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "650968": {
       "name": "Yohel Pozo",
@@ -2211,8 +2211,8 @@
     "805811": {
       "name": "Bryce Eldridge",
       "team": "Giants",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "606992": {
       "name": "Eric Haase",
@@ -2229,8 +2229,8 @@
     "642201": {
       "name": "Eli White",
       "team": "Braves",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "622761": {
       "name": "Jorge Mateo",
@@ -2271,20 +2271,20 @@
     "641680": {
       "name": "Jonah Heim",
       "team": "Athletics",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "677942": {
       "name": "Blaze Alexander",
       "team": "Orioles",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "655316": {
       "name": "Andruw Monasterio",
       "team": "Red Sox",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "681508": {
       "name": "Mickey Gasper",
@@ -2301,8 +2301,8 @@
     "672275": {
       "name": "Patrick Bailey",
       "team": "Guardians",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "656582": {
       "name": "Connor Joe",
@@ -2313,8 +2313,8 @@
     "680779": {
       "name": "Henry Davis",
       "team": "Pirates",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "683766": {
       "name": "Christian Koss",
@@ -2331,8 +2331,8 @@
     "553869": {
       "name": "Elias D\u00edaz",
       "team": "Rangers",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "516782": {
       "name": "Starling Marte",
@@ -2350,7 +2350,7 @@
       "name": "Richie Palacios",
       "team": "Rays",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "664056": {
       "name": "Harrison Bader",
@@ -2361,14 +2361,14 @@
     "605141": {
       "name": "Mookie Betts",
       "team": "Dodgers",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "805999": {
       "name": "A.J. Ewing",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "673490": {
       "name": "Ha-Seong Kim",
@@ -2385,20 +2385,20 @@
     "656537": {
       "name": "Derek Hill",
       "team": "Phillies",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "592885": {
       "name": "Christian Yelich",
       "team": "Brewers",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "683011": {
       "name": "Anthony Volpe",
       "team": "Yankees",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "506702": {
       "name": "Sandy Le\u00f3n",
@@ -2410,7 +2410,7 @@
       "name": "Henry Bolte",
       "team": "Athletics",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "683021": {
       "name": "Michael Stefanic",
@@ -2433,8 +2433,8 @@
     "668952": {
       "name": "Ryan Kreidler",
       "team": "Twins",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "669369": {
       "name": "Bryce Johnson",
@@ -2464,7 +2464,7 @@
       "name": "Logan O'Hoppe",
       "team": "Angels",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "640902": {
       "name": "Jhonny Pereda",
@@ -2493,8 +2493,8 @@
     "663968": {
       "name": "Jake Mangum",
       "team": "Pirates",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "686765": {
       "name": "Nick Sogard",
@@ -2506,7 +2506,7 @@
       "name": "Alika Williams",
       "team": "Athletics",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "806068": {
       "name": "Colt Emerson",
@@ -2529,8 +2529,8 @@
     "665161": {
       "name": "Jeremy Pe\u00f1a",
       "team": "Astros",
-      "streak": 7,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "680737": {
       "name": "Michael Helman",
@@ -2566,7 +2566,7 @@
       "name": "Jackson Holliday",
       "team": "Orioles",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "703492": {
       "name": "Nick Morabito",
@@ -2578,7 +2578,7 @@
       "name": "Dylan Crews",
       "team": "Nationals",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "676694": {
       "name": "Jake Meyers",
@@ -2613,8 +2613,8 @@
     "665953": {
       "name": "Andr\u00e9s Chaparro",
       "team": "Nationals",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "677060": {
       "name": "Chad Stevens",
@@ -2625,8 +2625,8 @@
     "699013": {
       "name": "Esmerlyn Valdez",
       "team": "Pirates",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 4,
+      "last_date": "2026-07-12"
     },
     "694224": {
       "name": "Gabriel Gonzalez",
@@ -2643,8 +2643,8 @@
     "645302": {
       "name": "Victor Robles",
       "team": "Mariners",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "685133": {
       "name": "Wade Meckler",
@@ -2667,26 +2667,26 @@
     "663494": {
       "name": "Bryan Torres",
       "team": "Cardinals",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "553993": {
       "name": "Eugenio Su\u00e1rez",
       "team": "Reds",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "682634": {
       "name": "Kevin Alc\u00e1ntara",
       "team": "Cubs",
-      "streak": 0,
-      "last_date": "2026-07-05"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "699393": {
       "name": "Pedro Ram\u00edrez",
       "team": "Cubs",
       "streak": 0,
-      "last_date": "2026-07-05"
+      "last_date": "2026-07-12"
     },
     "688363": {
       "name": "Graham Pauley",
@@ -2715,8 +2715,8 @@
     "683748": {
       "name": "Victor Mesa Jr.",
       "team": "Rays",
-      "streak": 3,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "807747": {
       "name": "Rikuu Nishida",
@@ -2727,8 +2727,8 @@
     "664770": {
       "name": "Nathan Lukes",
       "team": "Blue Jays",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "571771": {
       "name": "Enrique Hern\u00e1ndez",
@@ -2739,14 +2739,14 @@
     "676724": {
       "name": "Jared Young",
       "team": "Mets",
-      "streak": 2,
-      "last_date": "2026-07-10"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "676572": {
       "name": "Eric Wagaman",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "686475": {
       "name": "Tyler Tolbert",
@@ -2758,13 +2758,13 @@
       "name": "Taylor Trammell",
       "team": "Astros",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "682997": {
       "name": "Tyler Callihan",
       "team": "Pirates",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "807727": {
       "name": "Charles McAdoo",
@@ -2799,14 +2799,14 @@
     "699625": {
       "name": "Jimmy Crooks",
       "team": "Cardinals",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "694378": {
       "name": "Jacob Gonzalez",
-      "team": "White Sox",
+      "team": "Pirates",
       "streak": 0,
-      "last_date": "2026-07-09"
+      "last_date": "2026-07-12"
     },
     "813841": {
       "name": "Jonah Cox",
@@ -2823,14 +2823,14 @@
     "695490": {
       "name": "Edwin Arroyo",
       "team": "Reds",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "671083": {
       "name": "Buddy Kennedy",
       "team": "Mariners",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "656976": {
       "name": "Pavin Smith",
@@ -2866,19 +2866,19 @@
       "name": "Anthony Seigler",
       "team": "Red Sox",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "668942": {
       "name": "Josh Rojas",
       "team": "Royals",
-      "streak": 1,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "664774": {
       "name": "LaMonte Wade Jr.",
       "team": "Astros",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "805672": {
       "name": "Collin Price",
@@ -2889,20 +2889,20 @@
     "682622": {
       "name": "Noelvi Marte",
       "team": "Reds",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "663457": {
       "name": "Lars Nootbaar",
       "team": "Cardinals",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "694671": {
       "name": "Wyatt Langford",
       "team": "Rangers",
-      "streak": 7,
-      "last_date": "2026-07-11"
+      "streak": 8,
+      "last_date": "2026-07-12"
     },
     "694410": {
       "name": "LuJames Groover",
@@ -2937,8 +2937,8 @@
     "694203": {
       "name": "Denzer Guzman",
       "team": "Angels",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "641820": {
       "name": "Trey Mancini",
@@ -2961,14 +2961,14 @@
     "695731": {
       "name": "Braden Montgomery",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "694249": {
       "name": "Cole Carrigg",
       "team": "Rockies",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "694388": {
       "name": "Joey Loperfido",
@@ -2986,7 +2986,7 @@
       "name": "Nate Eaton",
       "team": "Red Sox",
       "streak": 0,
-      "last_date": "2026-07-09"
+      "last_date": "2026-07-12"
     },
     "670156": {
       "name": "Miles Mastrobuoni",
@@ -3045,8 +3045,8 @@
     "691176": {
       "name": "Jasson Dom\u00ednguez",
       "team": "Yankees",
-      "streak": 5,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "669256": {
       "name": "Nick Solak",
@@ -3087,8 +3087,8 @@
     "672356": {
       "name": "Gabriel Arias",
       "team": "Guardians",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "806198": {
       "name": "Cooper Pratt",
@@ -3099,8 +3099,8 @@
     "673237": {
       "name": "Yainer Diaz",
       "team": "Astros",
-      "streak": 5,
-      "last_date": "2026-07-11"
+      "streak": 6,
+      "last_date": "2026-07-12"
     },
     "670231": {
       "name": "John Rave",
@@ -3111,8 +3111,8 @@
     "669242": {
       "name": "Tommy Edman",
       "team": "Dodgers",
-      "streak": 4,
-      "last_date": "2026-07-11"
+      "streak": 5,
+      "last_date": "2026-07-12"
     },
     "665856": {
       "name": "Jair Camargo",
@@ -3123,8 +3123,8 @@
     "696135": {
       "name": "Kahlil Watson",
       "team": "Guardians",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "678577": {
       "name": "Junior Perez",
@@ -3159,14 +3159,14 @@
     "665052": {
       "name": "Griffin Conine",
       "team": "Marlins",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "608841": {
       "name": "Joey Meneses",
       "team": "Athletics",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "672279": {
       "name": "Michael Siani",
@@ -3177,8 +3177,8 @@
     "691019": {
       "name": "Kyle Teel",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-07-10"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "649966": {
       "name": "Luis Ur\u00edas",
@@ -3195,14 +3195,14 @@
     "640459": {
       "name": "Brian Navarreto",
       "team": "Marlins",
-      "streak": 1,
-      "last_date": "2026-07-05"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "596019": {
       "name": "Francisco Lindor",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-11"
+      "streak": 1,
+      "last_date": "2026-07-12"
     },
     "677595": {
       "name": "Ronny Mauricio",
@@ -3231,14 +3231,14 @@
     "701852": {
       "name": "Drew Cavanaugh",
       "team": "Giants",
-      "streak": 2,
-      "last_date": "2026-07-10"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "815873": {
       "name": "Sean Keys",
       "team": "Blue Jays",
-      "streak": 1,
-      "last_date": "2026-07-07"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "665828": {
       "name": "Oswaldo Cabrera",
@@ -3250,37 +3250,37 @@
       "name": "Romy Gonzalez",
       "team": "Red Sox",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "695508": {
       "name": "Cam Cauley",
       "team": "Rangers",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "630105": {
       "name": "Jake Cronenworth",
       "team": "Padres",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-12"
     },
     "811965": {
       "name": "Joshua Kuroda-Grauer",
       "team": "Athletics",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "671155": {
       "name": "Ivan Johnson",
       "team": "Reds",
       "streak": 0,
-      "last_date": "2026-07-01"
+      "last_date": "2026-07-12"
     },
     "682729": {
       "name": "Jonatan Clase",
       "team": "Blue Jays",
-      "streak": 2,
-      "last_date": "2026-07-11"
+      "streak": 3,
+      "last_date": "2026-07-12"
     },
     "669134": {
       "name": "Luis Campusano",
@@ -3298,7 +3298,7 @@
       "name": "Eliezer Alfonzo",
       "team": "Dodgers",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-12"
     },
     "571912": {
       "name": "Luke Maile",
@@ -3321,14 +3321,14 @@
     "593871": {
       "name": "Jorge Polanco",
       "team": "Mets",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "702176": {
       "name": "Alan Roden",
       "team": "Twins",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "675659": {
       "name": "Greg Jones",
@@ -3339,14 +3339,32 @@
     "680664": {
       "name": "Eduardo Valencia",
       "team": "Tigers",
-      "streak": 3,
-      "last_date": "2026-07-11"
+      "streak": 0,
+      "last_date": "2026-07-12"
     },
     "687529": {
       "name": "Grant McCray",
       "team": "Giants",
       "streak": 0,
       "last_date": "2026-07-10"
+    },
+    "694673": {
+      "name": "Abimelec Ortiz",
+      "team": "Nationals",
+      "streak": 1,
+      "last_date": "2026-07-12"
+    },
+    "677956": {
+      "name": "Rece Hinds",
+      "team": "Marlins",
+      "streak": 0,
+      "last_date": "2026-07-12"
+    },
+    "676551": {
+      "name": "Brewer Hicklen",
+      "team": "Braves",
+      "streak": 1,
+      "last_date": "2026-07-12"
     }
   },
   "no_hitter_teams": [
