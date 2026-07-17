@@ -495,14 +495,14 @@
     "665742": {
       "name": "Juan Soto",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-12"
+      "streak": 1,
+      "last_date": "2026-07-16"
     },
     "666182": {
       "name": "Bo Bichette",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-12"
+      "last_date": "2026-07-16"
     },
     "668901": {
       "name": "Mark Vientos",
@@ -519,8 +519,8 @@
     "683146": {
       "name": "Brett Baty",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-12"
+      "streak": 1,
+      "last_date": "2026-07-16"
     },
     "543760": {
       "name": "Marcus Semien",
@@ -537,20 +537,20 @@
     "701807": {
       "name": "Carson Benge",
       "team": "Mets",
-      "streak": 0,
-      "last_date": "2026-07-12"
+      "streak": 1,
+      "last_date": "2026-07-16"
     },
     "682626": {
       "name": "Francisco Alvarez",
       "team": "Mets",
-      "streak": 1,
-      "last_date": "2026-07-11"
+      "streak": 2,
+      "last_date": "2026-07-16"
     },
     "621438": {
       "name": "Tyrone Taylor",
       "team": "Mets",
-      "streak": 1,
-      "last_date": "2026-07-12"
+      "streak": 0,
+      "last_date": "2026-07-16"
     },
     "669004": {
       "name": "MJ Melendez",
@@ -807,8 +807,8 @@
     "607208": {
       "name": "Trea Turner",
       "team": "Phillies",
-      "streak": 1,
-      "last_date": "2026-07-12"
+      "streak": 2,
+      "last_date": "2026-07-16"
     },
     "596117": {
       "name": "Garrett Stubbs",
@@ -819,14 +819,14 @@
     "656941": {
       "name": "Kyle Schwarber",
       "team": "Phillies",
-      "streak": 2,
-      "last_date": "2026-07-12"
+      "streak": 3,
+      "last_date": "2026-07-16"
     },
     "547180": {
       "name": "Bryce Harper",
       "team": "Phillies",
-      "streak": 2,
-      "last_date": "2026-07-12"
+      "streak": 3,
+      "last_date": "2026-07-16"
     },
     "694025": {
       "name": "Felix Reyes",
@@ -844,13 +844,13 @@
       "name": "Brandon Marsh",
       "team": "Phillies",
       "streak": 0,
-      "last_date": "2026-07-12"
+      "last_date": "2026-07-16"
     },
     "681082": {
       "name": "Bryson Stott",
       "team": "Phillies",
-      "streak": 2,
-      "last_date": "2026-07-12"
+      "streak": 0,
+      "last_date": "2026-07-16"
     },
     "624641": {
       "name": "Edmundo Sosa",
@@ -861,8 +861,8 @@
     "702222": {
       "name": "Justin Crawford",
       "team": "Phillies",
-      "streak": 3,
-      "last_date": "2026-07-09"
+      "streak": 0,
+      "last_date": "2026-07-16"
     },
     "665561": {
       "name": "Rafael March\u00e1n",
@@ -1335,8 +1335,8 @@
     "592663": {
       "name": "J.T. Realmuto",
       "team": "Phillies",
-      "streak": 2,
-      "last_date": "2026-07-12"
+      "streak": 3,
+      "last_date": "2026-07-16"
     },
     "668939": {
       "name": "Adley Rutschman",
@@ -2121,8 +2121,8 @@
     "664761": {
       "name": "Alec Bohm",
       "team": "Phillies",
-      "streak": 1,
-      "last_date": "2026-07-12"
+      "streak": 0,
+      "last_date": "2026-07-16"
     },
     "670032": {
       "name": "Nicky Lopez",
@@ -2367,8 +2367,8 @@
     "805999": {
       "name": "A.J. Ewing",
       "team": "Mets",
-      "streak": 1,
-      "last_date": "2026-07-12"
+      "streak": 2,
+      "last_date": "2026-07-16"
     },
     "673490": {
       "name": "Ha-Seong Kim",
@@ -2739,8 +2739,8 @@
     "676724": {
       "name": "Jared Young",
       "team": "Mets",
-      "streak": 3,
-      "last_date": "2026-07-12"
+      "streak": 0,
+      "last_date": "2026-07-16"
     },
     "676572": {
       "name": "Eric Wagaman",
@@ -3034,7 +3034,7 @@
       "name": "Gabriel Rincones Jr.",
       "team": "Phillies",
       "streak": 0,
-      "last_date": "2026-07-11"
+      "last_date": "2026-07-16"
     },
     "691458": {
       "name": "Blaze Jordan",
@@ -3201,8 +3201,8 @@
     "596019": {
       "name": "Francisco Lindor",
       "team": "Mets",
-      "streak": 1,
-      "last_date": "2026-07-12"
+      "streak": 0,
+      "last_date": "2026-07-16"
     },
     "677595": {
       "name": "Ronny Mauricio",
@@ -3322,7 +3322,7 @@
       "name": "Jorge Polanco",
       "team": "Mets",
       "streak": 0,
-      "last_date": "2026-07-12"
+      "last_date": "2026-07-16"
     },
     "702176": {
       "name": "Alan Roden",
