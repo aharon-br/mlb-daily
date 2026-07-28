@@ -35,24 +35,12 @@ from highlights import recaps         # writes the local daily recap file
 # ---- helper functions
 
 def _filter_final_games(games):
-    '''keep only games that are fully done.
+    '''keep only games that are fully done, logging how many we dropped.
 
-    the MLB stats API uses a bunch of status codes to mean "this game is over."
-    we want all of them so we don't silently drop rainouts, so completed early
-    or extra-inning marathons that dragged past midnight
-
-    anything still in progress, postponed, or scheduled gets dropped
-    we can't build a box score from an incomplete game.
+    the terminal-status set itself lives in get_scores so the schedule fetch
+    and this second pass can't drift apart.
     '''
-    # Final, Game Over and Completed Early are the three temrinal status
-    # statsapi.schedule() returns 'status' as a plain string (the detailedState),
-    # not a nested dict — so we compare directly against the string value.
-    done_codes = {'Final', 'Game Over', 'Completed Early'}
-
-    filtered = [
-        game for game in games
-        if game.get('status') in done_codes
-    ]
+    filtered = get_scores.filter_final_games(games)
 
     skipped = len(games) - len(filtered)
     if skipped:
