@@ -76,6 +76,42 @@ def test_team_map_resolves_every_current_franchise_into_corpus():
     assert not unresolved, f'these clubs never join the corpus: {unresolved}'
 
 
+def test_team_map_resolves_to_the_recent_franchise_era():
+    '''existence in the corpus isn't enough — the mapped code must reach the
+    club's *recent* history, otherwise "first time since" always points decades
+    back. e.g. the Marlins live as "MIA" (2012+) and "FLO" (1993-2011); mapping
+    "MIA" -> "FLO" would strand every game in the pre-2012 era.'''
+    corpus = rarity._load_pattern_corpus()
+    latest = corpus.groupby('team').date.max()
+    # every current club must have corpus history within the last ~5 seasons of
+    # the corpus's own coverage (the corpus ends in 2024).
+    corpus_end = corpus.date.max()
+    cutoff = corpus_end - datetime.timedelta(days=365 * 5)
+    stale = {
+        abbrev: latest.get(rarity._to_retrosheet_code(abbrev))
+        for abbrev in CURRENT_STATSAPI_ABBREVS
+        if latest.get(rarity._to_retrosheet_code(abbrev), datetime.date.min) < cutoff
+    }
+    assert not stale, f'these clubs map to a stale franchise era: {stale}'
+
+
+def test_real_corpus_dates_compare_against_target_date():
+    '''the shipped parquet stores dates as strings; _load_pattern_corpus must
+    coerce them to datetime.date so `corpus.date < target_date` and the gap
+    subtraction work. this guards the conversion that the monkeypatched-corpus
+    tests bypass — a regression there would silently kill tier 3 inside the
+    broad tier-3 except.'''
+    corpus = rarity._load_pattern_corpus()
+    assert isinstance(corpus.date.iloc[0], datetime.date)
+
+    target = datetime.date(2025, 6, 1)
+    # a plain boolean-mask comparison must not raise (str vs date would).
+    prior = corpus[(corpus.team == 'BOS') & (corpus.date < target)]
+    assert not prior.empty
+    gap = (target - prior.date.max()).days
+    assert gap >= 0
+
+
 def test_mismatched_franchise_now_surfaces_tier3_event(monkeypatch):
     '''a Dodgers (StatsAPI "LAD") game must find its retrosheet ("LAN") history.
     before the fix the join compared "LAD" to "LAN" and always missed.'''
