@@ -26,22 +26,36 @@ jobs:
           python-version: '3.11'
 
       - name: Install chadwick
+        env:
+          CHADWICK_VERSION: "0.10.0"
+          # sha256 of the release tarball; leave empty to skip verification
+          CHADWICK_SHA256: ""
         run: |
+          set -euo pipefail
           # chadwick is not in the Ubuntu apt repos — install from GitHub releases
-          CHADWICK_VERSION=0.10.0
-          curl -sSL "https://github.com/chadwickbureau/chadwick/releases/download/v${CHADWICK_VERSION}/chadwick-${CHADWICK_VERSION}-linux-x86_64.tar.gz" \
-            | sudo tar -xz -C /usr/local --strip-components=1
+          url="https://github.com/chadwickbureau/chadwick/releases/download/v${CHADWICK_VERSION}/chadwick-${CHADWICK_VERSION}-linux-x86_64.tar.gz"
+          curl -sSL --fail -o chadwick.tar.gz "$url"
+          if [ -n "${CHADWICK_SHA256}" ]; then
+            echo "${CHADWICK_SHA256}  chadwick.tar.gz" | sha256sum -c -
+          fi
+          sudo tar -xzf chadwick.tar.gz -C /usr/local --strip-components=1
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Build corpus
-        run: python highlights/corpus.py ${{ github.event.inputs.start_year }} ${{ github.event.inputs.end_year }}
+        env:
+          START_YEAR: ${{ inputs.start_year }}
+          END_YEAR: ${{ inputs.end_year }}
+        run: python highlights/corpus.py "$START_YEAR" "$END_YEAR"
 
       - name: Commit corpus
+        env:
+          START_YEAR: ${{ inputs.start_year }}
+          END_YEAR: ${{ inputs.end_year }}
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add retrosheet-patterns.parquet
-          git diff --staged --quiet || git commit -m "chore: update retrosheet corpus ${{ github.event.inputs.start_year }}-${{ github.event.inputs.end_year }}"
+          git diff --staged --quiet || git commit -m "chore: update retrosheet corpus ${START_YEAR}-${END_YEAR}"
           git push
