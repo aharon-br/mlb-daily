@@ -11,3 +11,6 @@ build/
 venv/
 mlb-daily.bbprojectd
 .DS_Store
+
+# leftovers from an interrupted atomic write (recaps/, data/)
+*.tmp

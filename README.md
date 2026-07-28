@@ -94,6 +94,7 @@ go to your repo → settings → secrets and variables → actions, and add:
 | secret | required | what it is |
 |--------|----------|-----------|
 | `SLACK_WEBHOOK_URL` | no* | incoming webhook URL from your slack app |
+| `SLACK_ERROR_WEBHOOK_URL` | no | webhook for a separate error channel — a fatal run posts a short alert there |
 | `ANTHROPIC_API_KEY` | no | anthropic API key — only needed if you want the claude summary |
 
 *`SLACK_WEBHOOK_URL` is only required if `POST_TO_SLACK` is `"true"` (the default). the recap file is always written regardless.
@@ -223,3 +224,22 @@ west coast games routinely end around 1 AM ET. running at 9 AM gives the MLB ~8 
 | `ANTHROPIC_API_KEY` | github secret (optional) | anthropic API key for claude narrative |
 | `AI_SUMMARY` | workflow env var | set to `"true"` to enable the claude summary; default `"false"` |
 | `POST_TO_SLACK` | workflow env var | set to `"false"` to skip the slack post; recap file is always written regardless; default `"true"` |
+| `SLACK_ERROR_WEBHOOK_URL` | github secret (optional) | error-channel webhook; a fatal run posts the exception there before exiting non-zero |
+
+## failure modes
+
+the run exits non-zero (red in the Actions log) whenever it produced less than a
+full day's output, so a quiet failure never looks like a quiet day:
+
+| situation | what happens |
+|-----------|--------------|
+| MLB schedule API unreachable | fatal — no games list means we can't tell an off-day from an outage |
+| one game's box score / live feed fails | that game is skipped, the rest of the run continues, exit code 1 at the end |
+| every game fails to load | fatal, nothing is written |
+| tier 2 ledger or tier 3 corpus unavailable | those events are skipped, recap still posts, exit code 1 at the end |
+| `AI_SUMMARY=true` but the claude call fails | plain-text fallback is used, exit code 1 at the end |
+| slack post fails | fatal — but the recap file is written *before* the post, so the archive is never lost |
+
+the recap and the season ledger are written with a temp-file-and-rename, and the
+workflow's commit step runs with `if: always()`, so a failed run still persists
+the day's state instead of corrupting or dropping it.
