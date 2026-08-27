@@ -134,8 +134,11 @@ def post(text, top_lines, rare_events):
     print(f'slack response status: {resp.status_code}')
 
     # raise immediately so the caller / scheduler sees a failure rather than
-    # a quiet success with a malformed message
-    resp.raise_for_status()
+    # a quiet success with a malformed message. we raise our own error instead
+    # of resp.raise_for_status() because requests embeds the full URL — and the
+    # webhook URL is a credential — in the exception message.
+    if not resp.ok:
+        raise RuntimeError(f'slack webhook returned HTTP {resp.status_code}')
 
 
 def post_error(msg):
@@ -162,8 +165,10 @@ def post_error(msg):
     try:
         resp = requests.post(error_webhook, json=payload, timeout=10)
         print(f'slack error-channel response status: {resp.status_code}')
-        resp.raise_for_status()
-    except requests.RequestException as exc:
+        if not resp.ok:
+            print(f'slack error webhook returned HTTP {resp.status_code}')
+    except requests.RequestException:
         # don't let a failure in the error reporter mask the original error —
-        # just log and move on
-        print(f'failed to post error alert to slack: {exc}')
+        # just log and move on. the exception is not printed because requests
+        # includes the webhook URL (a credential) in its message.
+        print('failed to post error alert to slack (request error)')
