@@ -7,6 +7,12 @@ so the recaps/ folder becomes a browsable archive of every day the bot ran
 '''
 
 import os
+import tempfile
+
+
+def _repo_root():
+    '''absolute path to the repo root, where recaps/ lives.'''
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def write_recap(date, games, top_lines, rare_events, summary):
@@ -18,8 +24,7 @@ def write_recap(date, games, top_lines, rare_events, summary):
     rare_events — list of rare-event dicts from rarity.find_rare_events
     summary     — narrative string from narrative.write_summary if we are using AI summary writer
     '''
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    recaps_dir = os.path.join(repo_root, 'recaps')
+    recaps_dir = os.path.join(_repo_root(), 'recaps')
     os.makedirs(recaps_dir, exist_ok=True) 
     # make the recaps dir if its not there, this really only happens on the first run
     # but in case its been deleted or somethig it will start new
@@ -36,8 +41,18 @@ def write_recap(date, games, top_lines, rare_events, summary):
 
     entry = _build_entry(date, games, top_lines, rare_events, summary)
 
-    with open(filepath, 'w') as fh:
-        fh.write(entry + existing)
+    # write to a temp file and rename over the target. opening the year file
+    # with 'w' truncates it immediately, so a crash mid-write would destroy
+    # the whole season's archive to save one day's entry.
+    handle, tmp_path = tempfile.mkstemp(dir=recaps_dir, prefix=f'.{year}.', suffix='.tmp')
+    try:
+        with os.fdopen(handle, 'w') as fh:
+            fh.write(entry + existing)
+        os.replace(tmp_path, filepath)
+    except BaseException:
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+        raise
 
     print(f'recap written to recaps/{year}.md')
 
@@ -71,22 +86,28 @@ def _build_entry(date, games, top_lines, rare_events, summary):
     lines.append('')
     lines.append(f'_{len(games)} games played_')
     lines.append('')
-    lines.append(summary)
+    lines.append(summary or '_No narrative available for this run._')
     lines.append('')
 
+    # .get with defaults throughout: one malformed entry shouldn't cost us the
+    # day's whole recap, and the archive is the only durable record we keep
     if top_lines:
         lines.append('**Top lines**')
         for perf in top_lines:
-            lines.append(f'- **{perf["player"]}** ({perf["team"]}): {perf["line"]}')
+            player = perf.get('player', 'Unknown')
+            team = perf.get('team', 'Unknown')
+            lines.append(f'- **{player}** ({team}): {perf.get("line", "")}')
         lines.append('')
 
     if rare_events:
         lines.append('**Notable events**')
         for event in rare_events:
-            if event.get('since') is not None:
-                lines.append(f'- {event["description"]} — _last seen: {event["since"]}_')
+            description = event.get('description', event.get('label', 'Notable event'))
+            since = event.get('since')
+            if since is not None:
+                lines.append(f'- {description} — _last seen: {since}_')
             else:
-                lines.append(f'- {event["description"]}')
+                lines.append(f'- {description}')
         lines.append('')
 
     # trailing separator so entries stack cleanly when prepended
