@@ -10,6 +10,8 @@ import os
 import datetime
 import requests
 
+from highlights import formatting
+
 # block kit hard limits — if we ever get close to these the message will silently
 # be dropped by slack, so we guard against it proactively
 _max_blocks = 50
@@ -19,9 +21,7 @@ _max_text_characters = 3000
 def _truncate(text, limit=_max_text_characters):
     '''slack rejects text over 3000 characters
     cut off with visible indicator so we dont fail'''
-    if len(text) <= limit:
-        return text
-    return text[:limit - 20] + '\n_(truncated)_'
+    return formatting.truncate(text, limit, '\n_(truncated)_')
 
 
 def build_blocks(text, top_lines, rare_events):
@@ -68,17 +68,8 @@ def build_blocks(text, top_lines, rare_events):
 
     if rare_events:
         # rare events are things like no-hitters, 4-HR games, cycles, etc.
-        # 'since' is a human-readable string like "2019" or "Aug 2021", or
-        # None for tier-1 events where we don't have historical context yet.
-        def _fmt_event(event):
-            desc = event['description']
-            since = event.get('since')
-            if since:
-                return f'• {desc} — _last seen: {since}_'
-            return f'• {desc}'
-
         events_str = '*Notable firsts / rare events*\n' + '\n'.join(
-            _fmt_event(event) for event in rare_events
+            f'• {formatting.event_line(event)}' for event in rare_events
         )
         blocks.append({
             'type': 'section',
