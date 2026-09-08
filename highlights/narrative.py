@@ -16,6 +16,8 @@ call is made and the fallback plain-text summary is returned instead.
 import os
 import json
 
+from highlights import formatting
+
 
 # ---- constants --------------------------------------------------------------
 
@@ -69,13 +71,13 @@ def _truncate(text):
     for the occasional long-winded response. we add a note so the slack post
     doesn't just end mid-sentence and confuse readers.
     '''
-    if len(text) <= _SLACK_SAFE_CHAR_LIMIT:
-        return text
-
-    # cut at the last space before the limit so we don't slice a word in half
-    truncated = text[:_SLACK_SAFE_CHAR_LIMIT].rsplit(' ', 1)[0]
-    note = '... *(truncated for Slack)*'
-    return truncated + note
+    # word_boundary so we don't slice a word in half
+    return formatting.truncate(
+        text,
+        _SLACK_SAFE_CHAR_LIMIT,
+        '... *(truncated for Slack)*',
+        word_boundary=True,
+    )
 
 
 def _fallback(date, games, top_lines, rare_events):

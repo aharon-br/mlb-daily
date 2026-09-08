@@ -8,6 +8,8 @@ one dict per game. we iterate both sides (home/away) and both stat categories.
 this will supply the servce with the list of players with statlines worth highlighting for the day
 '''
 
+from highlights import boxscore
+
 # --------------- 
 #   * event weighting *
 #   this can be adusted it it feels like its highlighting too much minor things
@@ -65,18 +67,16 @@ def top_performances(box_scores, n=8, game_date=None):
     for box in box_scores:
         date_str = game_date or box.get('gameDate', box.get('officialDate', 'unknown date'))
 
-        # team names live in teamInfo, not in side['team'] (which only has {'id': ...})
-        team_info_map = box.get('teamInfo', {})
-
         for side in ('home', 'away'):
-            team_info = box.get(side, {})
-            team_name = team_info_map.get(side, {}).get('teamName', 'unknown team')
+            # team names live in teamInfo, not in side['team'] (which only has {'id': ...})
+            team_name = boxscore.team_name(box, side, default='unknown team')
 
             # figure out the opponent — whoever is on the other side of the box
-            opponent_key = 'away' if side == 'home' else 'home'
-            opponent = team_info_map.get(opponent_key, {}).get('teamName', 'unknown opponent')
+            opponent = boxscore.team_name(
+                box, boxscore.opponent_side(side), default='unknown opponent'
+            )
 
-            players = team_info.get('players', {})
+            players = box.get(side, {}).get('players', {})
 
             # get the players and data outta the item and start a loop of them
             for player_key, player_data in players.items():
@@ -142,7 +142,7 @@ def _score_batting(player_data, stat, team_name, opponent, game_date):
         return None  # not a performance worth highlighting, skip out
 
     return {
-        'player':   player_data.get('person', {}).get('fullName', 'unknown player'),
+        'player':   boxscore.player_name(player_data, default='unknown player'),
         'team':     team_name,
         'opponent': opponent,
         'date':     game_date,
@@ -163,7 +163,7 @@ def _score_pitching(player_data, stat, team_name, opponent, game_date):
     baseball is fun...
     '''
     innings_pitched_raw = stat.get('inningsPitched', '0.0')
-    ip = _parse_innings_pitched(innings_pitched_raw)
+    ip = boxscore.parse_innings_pitched(innings_pitched_raw)
 
     score = (
         _PITCHING_WEIGHTS['wins']           * stat.get('wins', 0) +
@@ -177,7 +177,7 @@ def _score_pitching(player_data, stat, team_name, opponent, game_date):
         return None  # below the interesting threshhold 
 
     return {
-        'player':   player_data.get('person', {}).get('fullName', 'unknown player'),
+        'player':   boxscore.player_name(player_data, default='unknown player'),
         'team':     team_name,
         'opponent': opponent,
         'date':     game_date,
@@ -185,25 +185,6 @@ def _score_pitching(player_data, stat, team_name, opponent, game_date):
         'line':     _format_pitching_line(stat, ip),
         'score':    score,
     }  # return the pitcher who had a good day, with the game and team infos, plus statline
-
-
-def _parse_innings_pitched(ip_str):
-    '''convert statsapi's "6.1" string to a real fractional float (6.333).
-
-    statsapi encodes outs as the decimal digit, so we split on the dot,
-    grab the outs part, and divide by 3 to get the true inning fraction.
-    if the string is bad we just return 0.0 so the rest of this can
-    carry works without bugging out
-    '''
-    try:
-        parts = str(ip_str).split('.')
-        full_innings = int(parts[0])
-        outs = int(parts[1]) if len(parts) > 1 else 0  # if the outs in inning is 0, then handle gracefull a 0
-        return full_innings + outs / 3.0  # outs/3 gives the actual fraction of an inning
-    except (ValueError, IndexError):
-        # unexpected format — log it and move on rather than blowing up
-        print(f'[statlines] warning: could not parse inningsPitched value: {ip_str!r}')
-        return 0.0
 
 
 # formatting helpers functions
@@ -251,7 +232,7 @@ def _format_pitching_line(stat, ip_float=None):
     # use already-parsed float as caller passes it, otherwise re-parse in case its missing
     # this avoids calling _parse_innings_pitched twice - we should get this already upsteam
     if ip_float is None:
-        ip_float = _parse_innings_pitched(stat.get('inningsPitched', '0.0'))
+        ip_float = boxscore.parse_innings_pitched(stat.get('inningsPitched', '0.0'))
 
     wins  = stat.get('wins', 0)
     ks    = stat.get('strikeOuts', 0)
