@@ -51,8 +51,15 @@ def build_blocks(text, top_lines, rare_events):
 
     if top_lines:
         # bullet each player line: "• *Name* (Team): stat line"
+        # .get with defaults: a malformed stat line should degrade one bullet,
+        # not raise a KeyError that kills the whole post
         lines_str = '*Top lines*\n' + '\n'.join(
-            f'• *{perf["player"]}* ({perf["team"]}): {perf["line"]}' for perf in top_lines
+            '• *{player}* ({team}): {line}'.format(
+                player=perf.get('player', 'Unknown'),
+                team=perf.get('team', 'Unknown'),
+                line=perf.get('line', ''),
+            )
+            for perf in top_lines
         )
         blocks.append({
             'type': 'section',
@@ -71,7 +78,7 @@ def build_blocks(text, top_lines, rare_events):
         # 'since' is a human-readable string like "2019" or "Aug 2021", or
         # None for tier-1 events where we don't have historical context yet.
         def _fmt_event(event):
-            desc = event['description']
+            desc = event.get('description', event.get('label', 'Notable event'))
             since = event.get('since')
             if since:
                 return f'• {desc} — _last seen: {since}_'
@@ -128,14 +135,24 @@ def post(text, top_lines, rare_events):
 
     print(f'posting {len(blocks)} blocks to slack webhook...')
 
-    resp = requests.post(webhook, json={'blocks': blocks}, timeout=10)
+    try:
+        resp = requests.post(webhook, json={'blocks': blocks}, timeout=10)
+    except requests.RequestException as exc:
+        # connection/timeout errors carry no response, so wrap them with the
+        # context the Actions log needs instead of a bare requests traceback
+        raise RuntimeError(f'slack webhook request failed: {exc}') from exc
 
     # log the status code so it shows up in the Actions run log
     print(f'slack response status: {resp.status_code}')
 
     # raise immediately so the caller / scheduler sees a failure rather than
-    # a quiet success with a malformed message
-    resp.raise_for_status()
+    # a quiet success with a malformed message. slack puts the actual reason
+    # ('invalid_blocks', 'no_service', ...) in the body, which raise_for_status
+    # drops — include it or the failure is untriageable.
+    if not resp.ok:
+        raise RuntimeError(
+            f'slack webhook returned {resp.status_code}: {resp.text.strip()[:500]}'
+        )
 
 
 def post_error(msg):
@@ -162,8 +179,10 @@ def post_error(msg):
     try:
         resp = requests.post(error_webhook, json=payload, timeout=10)
         print(f'slack error-channel response status: {resp.status_code}')
-        resp.raise_for_status()
-    except requests.RequestException as exc:
+        if not resp.ok:
+            print(f'error alert rejected by slack: {resp.text.strip()[:500]}')
+    except Exception as exc:
         # don't let a failure in the error reporter mask the original error —
-        # just log and move on
+        # just log and move on. this runs from the fatal handler in main.py, so
+        # it must never raise, whatever the cause.
         print(f'failed to post error alert to slack: {exc}')

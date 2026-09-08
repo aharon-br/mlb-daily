@@ -46,6 +46,8 @@ final parquet will have lines like:
 import datetime
 import json
 import os
+import tempfile
+import traceback
 
 import pandas
 
@@ -93,6 +95,11 @@ _PATTERN_MIN_GAP_DAYS = {
 }
 
 
+def _repo_root():
+    '''absolute path to the repo root, where data/ and the parquet live.'''
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def _to_retrosheet_code(abbrev):
     '''map a StatsAPI team abbreviation to its retrosheet franchise code.
 
@@ -102,7 +109,13 @@ def _to_retrosheet_code(abbrev):
     return _STATSAPI_TO_RETROSHEET.get(abbrev, abbrev)
 
 
-def find_rare_events(box_scores, target_date):
+# columns every tier 3 query touches. checked up front so a corpus rebuilt
+# with a different schema fails with a readable message instead of a KeyError
+# swallowed by the tier 3 catch-all.
+_CORPUS_REQUIRED_COLUMNS = ('date', 'team', 'pattern')
+
+
+def find_rare_events(box_scores, target_date, degradations=None):
     '''entry point. returns a flat list of verified rare event dicts.
 
     each dict has at minimum:
@@ -114,7 +127,13 @@ def find_rare_events(box_scores, target_date):
 
     callers (main.py) iterate this list without caring which tier it came
     from — everything surfaces through this single return value.
+
+    degradations — optional list; any tier that had to be skipped appends a
+    one-line reason to it. tiers still degrade rather than crash, but the
+    caller can see it happened instead of reading an unexplained short list.
     '''
+    if degradations is None:
+        degradations = []
     events = []  # create empty events arary to add to
 
     # tier 1: single-game, box-score checks
@@ -134,54 +153,92 @@ def find_rare_events(box_scores, target_date):
     # tier 2: season ledger from json
     # a read/write failure should just go missing, 
     # wont break the tier 1 results already processed above
+    new_ledger = None
     try:
         ledger_events, new_ledger = _check_season_ledger(box_scores, target_date, tier1_events=events)
         # use the tier 1 events already processed to the _check_season_ledger function
         events.extend(ledger_events)  # add anything returned for season ledger to the 
-        if new_ledger is not None:
-            _write_season_ledger(new_ledger)
     except Exception as exception:
-        print(f'tier 2 season ledger unavailable, skipping: {exception}')
+        # streaks and season-firsts stop advancing until this is fixed, so the
+        # traceback matters — the one-line message alone hides real bugs.
+        print(f'tier 2 season ledger check failed, skipping: {exception}')
+        traceback.print_exc()
+        degradations.append(f'tier 2 season ledger skipped: {exception}')
+
+    # the write is its own step: a failure here means today's streaks are gone
+    # for good (the ledger is the only place they live), which is worse than a
+    # failed read and must not be masked by the check above.
+    if new_ledger is not None:
+        try:
+            _write_season_ledger(new_ledger)
+        except OSError as exception:
+            print(f'tier 2 season ledger write failed — streak state NOT persisted: {exception}')
+            traceback.print_exc()
+            degradations.append(f'season ledger not written: {exception}')
 
     # tier 3: historical corpus pattern matching.
     # this can fail gracefully — if the parquet is missing (first run, tests)
     # we just skip it rather than blowing up the whole pipeline.
     try:
         corpus = _load_pattern_corpus()  # get pandas to read and return the corpus
-        patterns = _extract_patterns(box_scores)
-        for pattern in patterns:
-            # normalize the StatsAPI abbrev to the retrosheet code the corpus
-            # is keyed by, otherwise mismatched franchises never join (#1 cause
-            # of tier 3 going silent — see _STATSAPI_TO_RETROSHEET).
-            retro_team = _to_retrosheet_code(pattern['team'])
-            # find all prior occurrences of this exact pattern for this team
-            prior = corpus[
-                (corpus.team == retro_team) &
-                (corpus.pattern == pattern['pattern']) &
-                (corpus.date < target_date)
-            ]
-            if not prior.empty:
-                last_seen = prior.date.max()
-                gap = (target_date - last_seen).days
-                # per-pattern fuse: a flat 5-year cutoff suppressed almost
-                # everything since common patterns recur far more often than
-                # that. >= so an exactly-on-the-threshold gap still surfaces.
-                min_gap = _PATTERN_MIN_GAP_DAYS.get(
-                    pattern['pattern'], _DEFAULT_MIN_GAP_DAYS
-                )
-                if gap >= min_gap:
-                    events.append({
-                        'kind': pattern['pattern'],
-                        'label': pattern['label'],
-                        'description': pattern['description'],
-                        'since': last_seen.isoformat(),
-                    })
+    except FileNotFoundError as exception:
+        # expected on a fresh clone without the parquet, and in unit tests
+        print(f'tier 3 corpus not present, skipping historical checks: {exception}')
+        corpus = None
+        degradations.append('tier 3 corpus file missing')
     except Exception as exception:
-        # broad catch intentional — tier 3 is good but way more complex
-        # we still want the tier 1/2 events to make it through if this fails
-        print(f'warning: skipping tier 3 corpus check — {exception}')
+        # unreadable or wrong-shaped parquet is a real problem, not a no-op
+        print(f'tier 3 corpus could not be loaded: {exception}')
+        traceback.print_exc()
+        corpus = None
+        degradations.append(f'tier 3 corpus unusable: {exception}')
+
+    if corpus is not None:
+        try:
+            events.extend(_match_corpus_patterns(corpus, box_scores, target_date))
+        except Exception as exception:
+            # broad catch intentional — tier 3 is good but way more complex
+            # we still want the tier 1/2 events to make it through if this fails
+            print(f'warning: skipping tier 3 corpus check — {exception}')
+            traceback.print_exc()
+            degradations.append(f'tier 3 corpus check skipped: {exception}')
 
     print(f'rarity engine: {len(events)} event(s) found')
+    return events
+
+
+def _match_corpus_patterns(corpus, box_scores, target_date):
+    '''join today's patterns against the corpus and return "first since" events.'''
+    events = []
+
+    for pattern in _extract_patterns(box_scores):
+        # normalize the StatsAPI abbrev to the retrosheet code the corpus
+        # is keyed by, otherwise mismatched franchises never join (#1 cause
+        # of tier 3 going silent — see _STATSAPI_TO_RETROSHEET).
+        retro_team = _to_retrosheet_code(pattern['team'])
+        # find all prior occurrences of this exact pattern for this team
+        prior = corpus[
+            (corpus.team == retro_team) &
+            (corpus.pattern == pattern['pattern']) &
+            (corpus.date < target_date)
+        ]
+        if prior.empty:
+            continue
+
+        last_seen = prior.date.max()
+        gap = (target_date - last_seen).days
+        # per-pattern fuse: a flat 5-year cutoff suppressed almost everything
+        # since common patterns recur far more often than that. >= so an
+        # exactly-on-the-threshold gap still surfaces.
+        min_gap = _PATTERN_MIN_GAP_DAYS.get(pattern['pattern'], _DEFAULT_MIN_GAP_DAYS)
+        if gap >= min_gap:
+            events.append({
+                'kind': pattern['pattern'],
+                'label': pattern['label'],
+                'description': pattern['description'],
+                'since': last_seen.isoformat(),
+            })
+
     return events
 
 
@@ -738,15 +795,21 @@ def _load_season_ledger():
     using the year in the filename means it auto-resets each season.
     '''
     year = datetime.date.today().year
-    path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'data',
-        f'season-ledger-{year}.json',
-    )
+    path = os.path.join(_repo_root(), 'data', f'season-ledger-{year}.json')
     if not os.path.exists(path):
         return {}
     with open(path, 'r') as fh:
-        return json.load(fh)
+        try:
+            ledger = json.load(fh)
+        except json.JSONDecodeError as error:
+            # rewriting a truncated/corrupt ledger from scratch would wipe the
+            # season's streaks, so name the file and let the caller decide
+            raise ValueError(f'season ledger {path} is not valid JSON: {error}') from error
+
+    if not isinstance(ledger, dict):
+        raise ValueError(f'season ledger {path} holds {type(ledger).__name__}, expected an object')
+
+    return ledger
 
 
 def _write_season_ledger(ledger):
@@ -758,16 +821,24 @@ def _write_season_ledger(ledger):
     function only runs once per day, so it's fine.
     '''
     year = datetime.date.today().year
-    data_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'data',
-    )
+    data_dir = os.path.join(_repo_root(), 'data')
     # create the data/ directory if it doesn't exist (safety — it will always
     # exist in the repo, but this makes the function self-contained)
     os.makedirs(data_dir, exist_ok=True)
     path = os.path.join(data_dir, f'season-ledger-{year}.json')
-    with open(path, 'w') as fh:
-        json.dump(ledger, fh, indent=2, default=str)
+
+    # serialize to a sibling temp file and rename over the real one: a crash
+    # mid-write then leaves the previous ledger intact rather than a truncated
+    # file that fails to parse on every subsequent run.
+    handle, tmp_path = tempfile.mkstemp(dir=data_dir, prefix=f'.season-ledger-{year}.', suffix='.tmp')
+    try:
+        with os.fdopen(handle, 'w') as fh:
+            json.dump(ledger, fh, indent=2, default=str)
+        os.replace(tmp_path, path)
+    except BaseException:
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+        raise
 
 
 # ---- tier 3: historical data in parquet
@@ -788,11 +859,19 @@ def _load_pattern_corpus():
 
     local path: retrosheet-patterns.parquet in the repo root
     '''
-    path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'retrosheet-patterns.parquet',
-    )
+    path = os.path.join(_repo_root(), 'retrosheet-patterns.parquet')
+    if not os.path.exists(path):
+        raise FileNotFoundError(f'pattern corpus not found at {path}')
+
     datafile = pandas.read_parquet(path)
+
+    missing = [col for col in _CORPUS_REQUIRED_COLUMNS if col not in datafile.columns]
+    if missing:
+        raise ValueError(
+            f'pattern corpus {path} is missing column(s) {missing} — '
+            f'found {list(datafile.columns)}'
+        )
+
     # make sure date is actually a date type for comparison arithmetic
     # convert the date from the retrosheet into something for python datetime
     # e.g. "1923-07-24" -> "1923-07-24 00:00:00" -> "1923, 7, 24"
