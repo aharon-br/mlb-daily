@@ -49,6 +49,7 @@ cwevent column reference (used with -n flag for named headers):
   "visiting team" field that cwevent outputs.
 '''
 
+import datetime
 import os
 import subprocess
 import tempfile
@@ -131,7 +132,7 @@ def _download_year_to_dir(year, tmpdir):
             file_resp = requests.get(raw_url, headers=headers, timeout=60)
             if file_resp.status_code != 200:
                 continue
-            dest = os.path.join(tmpdir, name)
+            dest = os.path.join(tmpdir, os.path.basename(name))
             with open(dest, 'w', encoding='utf-8', errors='replace') as file:
                 file.write(file_resp.text)
             if ext in ('EVA', 'EVN', 'EVE'):
@@ -738,8 +739,13 @@ if __name__ == '__main__':
     out_path = 'retrosheet-patterns.parquet'
 
     if len(sys.argv) == 3:
-        start = int(sys.argv[1])
-        end = int(sys.argv[2])
+        try:
+            start = int(sys.argv[1])
+            end = int(sys.argv[2])
+        except ValueError:
+            sys.exit('start and end year must be integers')
+        if not (1871 <= start <= end <= datetime.date.today().year):
+            sys.exit(f'invalid year range {sys.argv[1]}-{sys.argv[2]}')
         print(f'building corpus for {start}-{end}')
         build_pattern_corpus(start_year=start, end_year=end, out_path=out_path)
     else:
