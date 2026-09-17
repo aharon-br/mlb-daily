@@ -49,6 +49,10 @@ import os
 
 import pandas
 
+from highlights import boxscore
+from highlights.boxscore import ordinal as _ordinal
+from highlights.paths import repo_path
+
 
 # ---- tier 3 lookup tables ---------------------------------------------------
 # the corpus (retrosheet-patterns.parquet) keys teams by RETROSHEET franchise
@@ -201,59 +205,37 @@ def _check_cycle(box):
     '''
     events = []
 
-    # statsapi.boxscore_data() puts home/away at the top level of the dict,
-    # not nested under a 'teams' key — so we access box['home'] / box['away'].
-    # box[side]['team'] only contains {'id'} — the full name is in teamInfo.
-    for side in ('away', 'home'):
-        side_data = box.get(side, {})
-        batters = side_data.get('batters', [])
-        batter_stats = side_data.get('players', {})
-        team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', 'Unknown')
+    for line in boxscore.iter_player_lines(box, 'batters', 'batting'):
+        stats = line.stats
+        hits    = stats.get('hits', 0)
+        doubles = stats.get('doubles', 0)
+        triples = stats.get('triples', 0)
+        hrs     = stats.get('homeRuns', 0)
 
-        for pid in batters:  # get each player ID in the batters arrray 
-            player_key = f'ID{pid}'
-            stats = (
-                batter_stats.get(player_key, {})
-                            .get('stats', {})
-                            .get('batting', {})
-            )  # get the batting stats for this player for this game
-            if not stats:
-                continue
+        # need at least 4 hits to have all four hit types, otherwise we can bail now
+        if hits < 4:
+            continue
 
-            hits    = stats.get('hits', 0)
-            doubles = stats.get('doubles', 0)
-            triples = stats.get('triples', 0)
-            hrs     = stats.get('homeRuns', 0)
+        # singles aren't a direct field , we back calculatae out from total hits
+        # this shouldn't ever go negative but we
+        # check with >= 1 which handles that in case
+        singles = hits - doubles - triples - hrs
 
-            # need at least 4 hits to have all four hit types, otherwise we can bail now
-            if hits < 4:
-                continue
-
-            # singles aren't a direct field , we back calculatae out from total hits
-            # this shouldn't ever go negative but we
-            # check with >= 1 which handles that in case
-            singles = hits - doubles - triples - hrs
-
-            if singles >= 1 and doubles >= 1 and triples >= 1 and hrs >= 1:
-                name = (
-                    batter_stats.get(player_key, {})
-                                .get('person', {})
-                                .get('fullName', f'Player {pid}')
-                )
-                print(f'cycle detected: {name} ({team_name})')
-                events.append({
-                    'kind': 'cycle',
-                    'label': 'Hit for the Cycle',
-                    # build a sentence the AI narrator can quote directly
-                    'description': (
-                        f'{name} ({team_name}) hit for the cycle: '
-                        f'{singles} single(s), {doubles} double(s), '
-                        f'{triples} triple(s), {hrs} home run(s).'
-                    ),
-                    # tier 1 events don't know the historical "since" —
-                    # that would come from tier 3 corpus matching
-                    'since': None,
-                })
+        if singles >= 1 and doubles >= 1 and triples >= 1 and hrs >= 1:
+            print(f'cycle detected: {line.name} ({line.team_name})')
+            events.append({
+                'kind': 'cycle',
+                'label': 'Hit for the Cycle',
+                # build a sentence the AI narrator can quote directly
+                'description': (
+                    f'{line.name} ({line.team_name}) hit for the cycle: '
+                    f'{singles} single(s), {doubles} double(s), '
+                    f'{triples} triple(s), {hrs} home run(s).'
+                ),
+                # tier 1 events don't know the historical "since" —
+                # that would come from tier 3 corpus matching
+                'since': None,
+            })
 
     return events
 
@@ -273,80 +255,40 @@ def _check_no_hitter(box):
     '''
     events = []
 
-    # statsapi.boxscore_data() puts home/away at the top level, not under 'teams'.
-    # box[side]['team'] only contains {'id'} — the full name is in teamInfo.
-    for side in ('away', 'home'):
-        side_data = box.get(side, {})
-        pitchers = side_data.get('pitchers', [])
-        player_data = side_data.get('players', {})
-        team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', 'Unknown')
+    for line in boxscore.iter_player_lines(box, 'pitchers', 'pitching'):
+        stats = line.stats
+        innings_raw = stats.get('inningsPitched', '0.0')
+        hits = stats.get('hits', 0)
 
-        for pid in pitchers:  # get each player ID in the pitchers array 
-            player_key = f'ID{pid}'
-            stats = (
-                player_data.get(player_key, {})
-                           .get('stats', {})
-                           .get('pitching', {})
-            )
-            if not stats:
-                continue
+        # inningsPitched is a string like "9.0" or "9.1" where the digit after
+        # the decimal is *outs* (0, 1, or 2), not tenths of an inning.
+        innings_float = boxscore.parse_innings_pitched(innings_raw)
 
-            innings_raw = stats.get('inningsPitched', '0.0')
-            hits = stats.get('hits', 0)
+        # need at least a complete 9-inning game (27 outs) to qualify
+        if innings_float >= 9.0 and hits == 0:
+            # perfect game = no hits, no walks, no HBP
+            walks = stats.get('baseOnBalls', 0)
+            hbp   = stats.get('hitBatsmen', 0)
+            is_perfect = (walks == 0 and hbp == 0)
 
-            '''inningsPitched is a string like "9.0" or "9.1" where the digit
-            after the decimal is *outs* (0, 1, or 2), not tenths of an inning.
-            we gotta use the same conversion from before
-            ----
-            using _parse_innings_pitched from statlines is cleaner but would
-            create a cross-module dependency so just exact the same logic here'''
-            try:
-                parts = str(innings_raw).split('.')
-                full_inn = int(parts[0])
-                outs = int(parts[1]) if len(parts) > 1 else 0
-                innings_float = full_inn + outs / 3.0
-            except (ValueError, IndexError):
-                continue
+            # label if it was perfect or a no-no
+            kind  = 'perfect_game' if is_perfect else 'no_hitter'
+            label = 'Perfect Game' if is_perfect else 'No-Hitter'
 
-            # need at least a complete 9-inning game (27 outs) to qualify
-            if innings_float >= 9.0 and hits == 0:
-                name = (
-                    player_data.get(player_key, {})
-                               .get('person', {})
-                               .get('fullName', f'Player {pid}')
-                )
-                # perfect game = no hits, no walks, no HBP
-                walks = stats.get('baseOnBalls', 0)
-                hbp   = stats.get('hitBatsmen', 0)
-                is_perfect = (walks == 0 and hbp == 0)
-
-                # label if it was perfect or a no-no
-                kind  = 'perfect_game' if is_perfect else 'no_hitter'
-                label = 'Perfect Game' if is_perfect else 'No-Hitter'
-
-                ks = stats.get('strikeOuts', 0)
-                print(f'{label} detected: {name} ({team_name}), {ks} K')
-                events.append({
-                    'kind': kind,
-                    'label': label,
-                    'description': (
-                        f'{name} ({team_name}) threw a {label.lower()} — '
-                        f'{ks} strikeout(s), '
-                        f'{innings_raw} inning(s) pitched.'
-                    ),
-                    'since': None,
-                })
+            ks = stats.get('strikeOuts', 0)
+            print(f'{label} detected: {line.name} ({line.team_name}), {ks} K')
+            events.append({
+                'kind': kind,
+                'label': label,
+                'description': (
+                    f'{line.name} ({line.team_name}) threw a {label.lower()} — '
+                    f'{ks} strikeout(s), '
+                    f'{innings_raw} inning(s) pitched.'
+                ),
+                'since': None,
+            })
 
     return events
-
-
-def _ordinal(num):
-    '''return the ordinal string for an integer, e.g. 1 -> "1st", 3 -> "3rd".'''
-    num = int(num)
-    suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(num % 10, 'th')
-    if 11 <= num % 100 <= 13:
-        suffix = 'th'
-    return f'{num}{suffix}'
 
 
 def _check_immaculate_inning(box):
@@ -355,50 +297,27 @@ def _check_immaculate_inning(box):
     play-by-play data included in the box dict as 'play_by_play' from main function.
     each play is checked for event == "Strikeout" and *exactly* 3 pitches from pitchIndex length
     '''
-    plays_data = box.get('play_by_play', {})
-    if not plays_data:
-        return []
-
-    all_plays = plays_data.get('allPlays', [])
-    plays_by_inning = plays_data.get('playsByInning', [])
     events = []
 
-    for inning_data in plays_by_inning:
-        inning_num = inning_data.get('num', '?')
-        for half in ('top', 'bottom'):
-            play_indices = inning_data.get(half, [])
-            if len(play_indices) != 3:
-                continue
+    for half_inning in boxscore.iter_half_innings(box):
+        if not boxscore.is_immaculate(half_inning):
+            continue
 
-            half_plays = [all_plays[pi] for pi in play_indices if pi < len(all_plays)]
-            if len(half_plays) != 3:
-                continue
+        pitcher_name = boxscore.matchup_name(
+            half_inning.plays[0], 'pitcher', default='Unknown Pitcher'
+        )
+        team_name = boxscore.team_name(box, half_inning.pitching_side)
 
-            # all 3 must be strikeouts
-            if not all(play.get('result', {}).get('event') == 'Strikeout' for play in half_plays):
-                continue
-
-            # each must have been exactly 3 pitches
-            if not all(len(play.get('pitchIndex', [])) == 3 for play in half_plays):
-                continue
-
-            pitcher = half_plays[0].get('matchup', {}).get('pitcher', {})
-            pitcher_name = pitcher.get('fullName', 'Unknown Pitcher')
-            # top half = away team batting, so home team is pitching; bottom = vice versa
-            pitching_side_key = 'home' if half == 'top' else 'away'
-            team_name = box.get('teamInfo', {}).get(pitching_side_key, {}).get('teamName', 'Unknown')
-            ordinal = _ordinal(inning_num)
-
-            print(f'immaculate inning: {pitcher_name} ({team_name}), inning {inning_num}')
-            events.append({
-                'kind': 'immaculate_inning',
-                'label': 'Immaculate Inning',
-                'description': (
-                    f'{pitcher_name} ({team_name}) threw an immaculate inning '
-                    f'in the {ordinal} — 3 strikeouts on 9 pitches.'
-                ),
-                'since': None,
-            })
+        print(f'immaculate inning: {pitcher_name} ({team_name}), inning {half_inning.num}')
+        events.append({
+            'kind': 'immaculate_inning',
+            'label': 'Immaculate Inning',
+            'description': (
+                f'{pitcher_name} ({team_name}) threw an immaculate inning '
+                f'in the {_ordinal(half_inning.num)} — 3 strikeouts on 9 pitches.'
+            ),
+            'since': None,
+        })
 
     return events
 
@@ -413,42 +332,20 @@ def _check_multi_hr_individual(box, threshold=3):
     '''
     events = []
 
-    # statsapi.boxscore_data() puts home/away at the top level, not under 'teams'.
-    # box[side]['team'] only contains {'id'} — the full name is in teamInfo.
-    for side in ('away', 'home'):
-        side_data = box.get(side, {})
-        batters = side_data.get('batters', [])
-        player_data = side_data.get('players', {})
-        team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', 'Unknown')
-
-        for pid in batters:
-            player_key = f'ID{pid}'
-            stats = (
-                player_data.get(player_key, {})
-                           .get('stats', {})
-                           .get('batting', {})
-            )
-            if not stats:
-                continue
-
-            hrs = stats.get('homeRuns', 0)
-            if hrs >= threshold:
-                name = (
-                    player_data.get(player_key, {})
-                               .get('person', {})
-                               .get('fullName', f'Player {pid}')
-                )
-                rbi = stats.get('rbi', 0)
-                print(f'multi-HR game: {name} ({team_name}) — {hrs} HR')
-                events.append({
-                    'kind': 'multi_hr',
-                    'label': f'{hrs}-Homer Game',
-                    'description': (
-                        f'{name} ({team_name}) hit {hrs} home run(s) '
-                        f'with {rbi} RBI.'
-                    ),
-                    'since': None,
-                })
+    for line in boxscore.iter_player_lines(box, 'batters', 'batting'):
+        hrs = line.stats.get('homeRuns', 0)
+        if hrs >= threshold:
+            rbi = line.stats.get('rbi', 0)
+            print(f'multi-HR game: {line.name} ({line.team_name}) — {hrs} HR')
+            events.append({
+                'kind': 'multi_hr',
+                'label': f'{hrs}-Homer Game',
+                'description': (
+                    f'{line.name} ({line.team_name}) hit {hrs} home run(s) '
+                    f'with {rbi} RBI.'
+                ),
+                'since': None,
+            })
 
     return events
 
@@ -472,43 +369,20 @@ def _check_position_player_pitching(box):
     '''
     events = []
 
-    # statsapi.boxscore_data() puts home/away at the top level, not under 'teams'.
-    # box[side]['team'] only contains {'id'} — the full name is in teamInfo.
-    for side in ('away', 'home'):
-        side_data = box.get(side, {})
-        pitchers = side_data.get('pitchers', [])
-        player_data = side_data.get('players', {})
-        team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', 'Unknown')
+    for line in boxscore.iter_position_player_pitchers(box):
+        primary_pos = boxscore.position_abbrev(line.player)
+        innings = line.stats.get('inningsPitched', '?')
 
-        for pid in pitchers:
-            player_key = f'ID{pid}'
-            player = player_data.get(player_key, {})
-
-            primary_pos = player.get('position', {}).get('abbreviation', '')
-            # allPositions covers guys listed at multiple spots (DH/P, etc.)
-            all_pos = [
-                pos.get('abbreviation', '')
-                for pos in player.get('allPositions', [])
-            ]
-
-            # skip if they're a real pitcher at any listed position
-            if 'P' in all_pos or primary_pos == 'P':
-                continue
-
-            name = player.get('person', {}).get('fullName', f'Player {pid}')
-            stats = player.get('stats', {}).get('pitching', {})
-            innings = stats.get('inningsPitched', '?')
-
-            print(f'position player pitching: {name} ({primary_pos}, {team_name})')
-            events.append({
-                'kind': 'position_player_pitching',
-                'label': 'Position Player Pitching',
-                'description': (
-                    f'{name} ({team_name}), normally a {primary_pos}, '
-                    f'took the mound and pitched {innings} inning(s).'
-                ),
-                'since': None,
-            })
+        print(f'position player pitching: {line.name} ({primary_pos}, {line.team_name})')
+        events.append({
+            'kind': 'position_player_pitching',
+            'label': 'Position Player Pitching',
+            'description': (
+                f'{line.name} ({line.team_name}), normally a {primary_pos}, '
+                f'took the mound and pitched {innings} inning(s).'
+            ),
+            'since': None,
+        })
 
     return events
 
@@ -517,39 +391,19 @@ def _check_double_digit_k(box):
     '''find any pitcher who struck out 10 or more batters in the game.'''
     events = []
 
-    for side in ('away', 'home'):
-        side_data = box.get(side, {})
-        pitchers = side_data.get('pitchers', [])
-        player_data = side_data.get('players', {})
-        team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', 'Unknown')
-
-        for pid in pitchers:
-            player_key = f'ID{pid}'
-            stats = (
-                player_data.get(player_key, {})
-                           .get('stats', {})
-                           .get('pitching', {})
-            )
-            if not stats:
-                continue
-
-            ks = stats.get('strikeOuts', 0)
-            if ks >= 10:
-                name = (
-                    player_data.get(player_key, {})
-                               .get('person', {})
-                               .get('fullName', f'Player {pid}')
-                )
-                ip = stats.get('inningsPitched', '?')
-                print(f'double-digit K: {name} ({team_name}) — {ks} K')
-                events.append({
-                    'kind': 'double_digit_k',
-                    'label': '10+ Strikeout Game',
-                    'description': (
-                        f'{name} ({team_name}) struck out {ks} batters in {ip} IP.'
-                    ),
-                    'since': None,
-                })
+    for line in boxscore.iter_player_lines(box, 'pitchers', 'pitching'):
+        ks = line.stats.get('strikeOuts', 0)
+        if ks >= 10:
+            ip = line.stats.get('inningsPitched', '?')
+            print(f'double-digit K: {line.name} ({line.team_name}) — {ks} K')
+            events.append({
+                'kind': 'double_digit_k',
+                'label': '10+ Strikeout Game',
+                'description': (
+                    f'{line.name} ({line.team_name}) struck out {ks} batters in {ip} IP.'
+                ),
+                'since': None,
+            })
 
     return events
 
@@ -558,40 +412,22 @@ def _check_shutout(box):
     '''detect when a team's pitching staff held the opponent to zero runs.'''
     events = []
 
-    home_data = box.get('home', {})
-    away_data = box.get('away', {})
-    # box[side]['team'] only contains {'id'} — the full name is in teamInfo.
-    team_info = box.get('teamInfo', {})
-    home_name = team_info.get('home', {}).get('teamName', 'Unknown')
-    away_name = team_info.get('away', {}).get('teamName', 'Unknown')
+    # 'home' first so a home-team shutout is listed ahead of an away one
+    for side in ('home', 'away'):
+        if boxscore.team_stats(box, side, 'pitching').get('runs', 1) != 0:
+            continue
 
-    home_pitching = home_data.get('teamStats', {}).get('pitching', {})
-    away_pitching = away_data.get('teamStats', {}).get('pitching', {})
-    home_batting = home_data.get('teamStats', {}).get('batting', {})
-    away_batting = away_data.get('teamStats', {}).get('batting', {})
+        shutout_by = boxscore.team_name(box, side)
+        shutout_team = boxscore.team_name(box, boxscore.opponent_side(side))
+        # display the run total of the team that did the shutting out
+        score = boxscore.team_stats(box, side, 'batting').get('runs', 0)
 
-    # home pitching staff shut out the away team — display home team's run total
-    if home_pitching.get('runs', 1) == 0:
-        score = home_batting.get('runs', 0)
-        print(f'shutout: {away_name} shut out by {home_name} ({score}-0)')
+        print(f'shutout: {shutout_team} shut out by {shutout_by} ({score}-0)')
         events.append({
             'kind': 'shutout',
             'label': 'Shutout',
             'description': (
-                f'{home_name} shut out {away_name} ({score}-0).'
-            ),
-            'since': None,
-        })
-
-    # away pitching staff shut out the home team — display away team's run total
-    if away_pitching.get('runs', 1) == 0:
-        score = away_batting.get('runs', 0)
-        print(f'shutout: {home_name} shut out by {away_name} ({score}-0)')
-        events.append({
-            'kind': 'shutout',
-            'label': 'Shutout',
-            'description': (
-                f'{away_name} shut out {home_name} ({score}-0).'
+                f'{shutout_by} shut out {shutout_team} ({score}-0).'
             ),
             'since': None,
         })
@@ -619,63 +455,39 @@ def _check_season_ledger(box_scores, target_date, tier1_events=None):
     # hitting streaks: update every batter from every box score
     _STREAK_MILESTONES = {20, 30, 40}
     for box in box_scores:
-        for side in ('away', 'home'):
-            side_data = box.get(side, {})
-            batters = side_data.get('batters', [])
-            player_data = side_data.get('players', {})
-            team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', 'Unknown')
+        for line in boxscore.iter_player_lines(box, 'batters', 'batting'):
+            hits = line.stats.get('hits', 0)
+            # plate appearances = at bats + walks + sac flies etc.; skip
+            # guys who didn't actually bat (e.g. defensive subs)
+            if line.stats.get('atBats', 0) == 0:
+                continue
 
-            for pid in batters:
-                player_key = f'ID{pid}'
-                batting = (
-                    player_data.get(player_key, {})
-                               .get('stats', {})
-                               .get('batting', {})
-                )
-                if not batting:
-                    continue
+            pid_str = str(line.pid)
+            prev = streaks.get(pid_str, {'streak': 0})
+            prev_streak = prev.get('streak', 0)
 
-                hits = batting.get('hits', 0)
-                # plate appearances = at bats + walks + sac flies etc.; skip
-                # guys who didn't actually bat (e.g. defensive subs)
-                ab = batting.get('atBats', 0)
-                if ab == 0:
-                    continue
+            new_streak = prev_streak + 1 if hits > 0 else 0
 
-                pid_str = str(pid)
-                prev = streaks.get(pid_str, {'streak': 0})
-                prev_streak = prev.get('streak', 0)
+            streaks[pid_str] = {
+                'name': line.name,
+                'team': line.team_name,
+                'streak': new_streak,
+                'last_date': date_str,
+            }
 
-                if hits > 0:
-                    new_streak = prev_streak + 1
-                else:
-                    new_streak = 0
-
-                name = (
-                    player_data.get(player_key, {})
-                               .get('person', {})
-                               .get('fullName', f'Player {pid}')
-                )
-                streaks[pid_str] = {
-                    'name': name,
-                    'team': team_name,
-                    'streak': new_streak,
-                    'last_date': date_str,
-                }
-
-                # emit once per milestone crossing (prev was just below, now at/above)
-                for milestone in _STREAK_MILESTONES:
-                    if prev_streak < milestone <= new_streak:
-                        print(f'hit streak milestone: {name} at {new_streak} games')
-                        events.append({
-                            'kind': 'hit_streak',
-                            'label': f'{new_streak}-Game Hit Streak',
-                            'description': (
-                                f'{name} ({team_name}) has hit safely in '
-                                f'{new_streak} consecutive games.'
-                            ),
-                            'since': None,
-                        })
+            # emit once per milestone crossing (prev was just below, now at/above)
+            for milestone in _STREAK_MILESTONES:
+                if prev_streak < milestone <= new_streak:
+                    print(f'hit streak milestone: {line.name} at {new_streak} games')
+                    events.append({
+                        'kind': 'hit_streak',
+                        'label': f'{new_streak}-Game Hit Streak',
+                        'description': (
+                            f'{line.name} ({line.team_name}) has hit safely in '
+                            f'{new_streak} consecutive games.'
+                        ),
+                        'since': None,
+                    })
 
     # season firsts: cycle
     tier1_events = tier1_events or []
@@ -738,11 +550,7 @@ def _load_season_ledger():
     using the year in the filename means it auto-resets each season.
     '''
     year = datetime.date.today().year
-    path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'data',
-        f'season-ledger-{year}.json',
-    )
+    path = repo_path('data', f'season-ledger-{year}.json')
     if not os.path.exists(path):
         return {}
     with open(path, 'r') as fh:
@@ -758,10 +566,7 @@ def _write_season_ledger(ledger):
     function only runs once per day, so it's fine.
     '''
     year = datetime.date.today().year
-    data_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'data',
-    )
+    data_dir = repo_path('data')
     # create the data/ directory if it doesn't exist (safety — it will always
     # exist in the repo, but this makes the function self-contained)
     os.makedirs(data_dir, exist_ok=True)
@@ -788,11 +593,7 @@ def _load_pattern_corpus():
 
     local path: retrosheet-patterns.parquet in the repo root
     '''
-    path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'retrosheet-patterns.parquet',
-    )
-    datafile = pandas.read_parquet(path)
+    datafile = pandas.read_parquet(repo_path('retrosheet-patterns.parquet'))
     # make sure date is actually a date type for comparison arithmetic
     # convert the date from the retrosheet into something for python datetime
     # e.g. "1923-07-24" -> "1923-07-24 00:00:00" -> "1923, 7, 24"
@@ -816,20 +617,18 @@ def _extract_patterns(box_scores):
     patterns = []  # open empty array of patterns
 
     for box in box_scores:
-        for side in ('away', 'home'):
-            side_data = box.get(side, {})
+        for side in boxscore.SIDES:
             # box['home']['team'] only has 'id' and 'name' — abbreviation lives
             # in box['teamInfo'][side] (from gameData.teams), not in the boxscore team dict
-            team_abbrev = box.get('teamInfo', {}).get(side, {}).get('abbreviation', '')
-            team_name = side_data.get('team', {}).get('name', team_abbrev)
-            team_stats = side_data.get('teamStats', {})
+            team_abbrev = boxscore.team_abbrev(box, side)
+            team_name = box.get(side, {}).get('team', {}).get('name', team_abbrev)
 
             # stolen_base_burst: this team's batters stole 4+ bases.
             # KNOWN NO-OP: corpus.py has no stolen_base_burst detector, so the
             # parquet contains zero rows for it — tier 3's `prior` lookup is
             # always empty and this never surfaces. left in place intentionally
             # until a corpus detector is added and the parquet is rebuilt.
-            batting_stats = team_stats.get('batting', {})
+            batting_stats = boxscore.team_stats(box, side, 'batting')
             stolen_base_burst = batting_stats.get('stolenBases', 0)
             if stolen_base_burst >= 4 and team_abbrev:
                 patterns.append({
@@ -876,65 +675,50 @@ def _extract_inning_hr_patterns(box):
     record which inning each HR happened in.
     '''
     patterns = []
-    plays_data = box.get('play_by_play', {})
-    if not plays_data:
-        return patterns
 
-    all_plays = plays_data.get('allPlays', [])
-    plays_by_inning = plays_data.get('playsByInning', [])
+    for half_inning in boxscore.iter_half_innings(box):
+        if not half_inning.plays:
+            continue
 
-    for inning_data in plays_by_inning:
-        inning_num = inning_data.get('num', '?')
-        for half in ('top', 'bottom'):
-            play_indices = inning_data.get(half, [])
-            half_plays = [all_plays[pi] for pi in play_indices if pi < len(all_plays)]
-            if not half_plays:
-                continue
+        batting_side = half_inning.batting_side
+        team_abbrev = boxscore.team_abbrev(box, batting_side)
+        if not team_abbrev:
+            continue
+        team_name = boxscore.team_name(box, batting_side, default=team_abbrev)
 
-            # batting team for this half-inning: top = away, bottom = home
-            batting_side = 'away' if half == 'top' else 'home'
-            team_abbrev = box.get('teamInfo', {}).get(batting_side, {}).get('abbreviation', '')
-            team_name = box.get('teamInfo', {}).get(batting_side, {}).get('teamName', team_abbrev)
-            if not team_abbrev:
-                continue
+        # event names in PA order so we can look for consecutive HRs
+        events = half_inning.events
+        hr_count = events.count('Home Run')
 
-            # collect event names in PA order so we can look for consecutive HRs
-            events = [play.get('result', {}).get('event', '') for play in half_plays]
-            hr_count = events.count('Home Run')
+        # three_hr_inning: 3+ HRs regardless of order
+        if hr_count >= 3:
+            patterns.append({
+                'team': team_abbrev,
+                'pattern': 'three_hr_inning',
+                'label': f'{hr_count} HRs in One Inning',
+                'description': (
+                    f'{team_name} hit {hr_count} home run(s) in the '
+                    f'{_ordinal(half_inning.num)} inning.'
+                ),
+            })
 
-            # three_hr_inning: 3+ HRs regardless of order
-            if hr_count >= 3:
+        # back_to_back_hr_inning: any two adjacent HRs in the event list
+        for idx in range(len(events) - 1):
+            if events[idx] == 'Home Run' and events[idx + 1] == 'Home Run':
+                batter_a = boxscore.matchup_name(half_inning.plays[idx], 'batter')
+                batter_b = boxscore.matchup_name(half_inning.plays[idx + 1], 'batter')
                 patterns.append({
                     'team': team_abbrev,
-                    'pattern': 'three_hr_inning',
-                    'label': f'{hr_count} HRs in One Inning',
+                    'pattern': 'back_to_back_hr_inning',
+                    'label': 'Back-to-Back Home Runs',
                     'description': (
-                        f'{team_name} hit {hr_count} home run(s) in the '
-                        f'{_ordinal(inning_num)} inning.'
+                        f'{batter_a} and {batter_b} ({team_name}) hit '
+                        f'back-to-back home runs in the {_ordinal(half_inning.num)} inning.'
                     ),
                 })
-
-            # back_to_back_hr_inning: any two adjacent HRs in the event list
-            for idx in range(len(events) - 1):
-                if events[idx] == 'Home Run' and events[idx + 1] == 'Home Run':
-                    batter_a = (
-                        half_plays[idx].get('matchup', {}).get('batter', {}).get('fullName', '')
-                    )
-                    batter_b = (
-                        half_plays[idx + 1].get('matchup', {}).get('batter', {}).get('fullName', '')
-                    )
-                    patterns.append({
-                        'team': team_abbrev,
-                        'pattern': 'back_to_back_hr_inning',
-                        'label': 'Back-to-Back Home Runs',
-                        'description': (
-                            f'{batter_a} and {batter_b} ({team_name}) hit '
-                            f'back-to-back home runs in the {_ordinal(inning_num)} inning.'
-                        ),
-                    })
-                    # only emit once per half-inning even if there are two
-                    # back-to-back pairs (e.g. HRs on plays 1,2,3)
-                    break
+                # only emit once per half-inning even if there are two
+                # back-to-back pairs (e.g. HRs on plays 1,2,3)
+                break
 
     return patterns
 
@@ -951,32 +735,23 @@ def _extract_walk_off_grand_slam(box):
     to checking pre-play runners via 'runners' in the play dict.
     '''
     patterns = []
-    plays_data = box.get('play_by_play', {})
-    if not plays_data:
-        return patterns
-
-    all_plays = plays_data.get('allPlays', [])
-    plays_by_inning = plays_data.get('playsByInning', [])
-    if not plays_by_inning:
-        return patterns
 
     # only the final inning's bottom half can be a walk-off
-    last_inning = plays_by_inning[-1]
-    bottom_indices = last_inning.get('bottom', [])
-    bottom_plays = [all_plays[pi] for pi in bottom_indices if pi < len(all_plays)]
-
-    home_abbrev = box.get('teamInfo', {}).get('home', {}).get('abbreviation', '')
-    home_name = box.get('teamInfo', {}).get('home', {}).get('teamName', home_abbrev)
-    if not home_abbrev:
+    final_half = boxscore.final_half_inning(box, half='bottom')
+    if final_half is None:
         return patterns
 
-    for play in bottom_plays:
+    home_abbrev = boxscore.team_abbrev(box, 'home')
+    if not home_abbrev:
+        return patterns
+    home_name = boxscore.team_name(box, 'home', default=home_abbrev)
+
+    for play in final_half.plays:
         if play.get('result', {}).get('event') != 'Home Run':
             continue
 
         # postOnFirst/Second/Third are post-play state — all empty after a HR
         # since every runner scored. check the pre-play runners list instead.
-        matchup = play.get('matchup', {})
         runners_before = [
             runner for runner in play.get('runners', [])
             if runner.get('movement', {}).get('start') is not None
@@ -988,7 +763,7 @@ def _extract_walk_off_grand_slam(box):
         on_third  = '3B' in occupied
 
         if on_first and on_second and on_third:
-            batter_name = matchup.get('batter', {}).get('fullName', '')
+            batter_name = boxscore.matchup_name(play, 'batter')
             patterns.append({
                 'team': home_abbrev,
                 'pattern': 'walk_off_grand_slam',
@@ -1012,47 +787,27 @@ def _extract_immaculate_inning_pattern(box):
     with "first time since X" context. the detection logic mirrors tier 1 exactly.
     '''
     patterns = []
-    plays_data = box.get('play_by_play', {})
-    if not plays_data:
-        return patterns
 
-    all_plays = plays_data.get('allPlays', [])
-    plays_by_inning = plays_data.get('playsByInning', [])
+    for half_inning in boxscore.iter_half_innings(box):
+        if not boxscore.is_immaculate(half_inning):
+            continue
 
-    for inning_data in plays_by_inning:
-        inning_num = inning_data.get('num', '?')
-        for half in ('top', 'bottom'):
-            play_indices = inning_data.get(half, [])
-            if len(play_indices) != 3:
-                continue
+        pitching_side = half_inning.pitching_side
+        team_abbrev = boxscore.team_abbrev(box, pitching_side)
+        if not team_abbrev:
+            continue
+        team_name = boxscore.team_name(box, pitching_side, default=team_abbrev)
+        pitcher_name = boxscore.matchup_name(half_inning.plays[0], 'pitcher')
 
-            half_plays = [all_plays[pi] for pi in play_indices if pi < len(all_plays)]
-            if len(half_plays) != 3:
-                continue
-
-            if not all(play.get('result', {}).get('event') == 'Strikeout' for play in half_plays):
-                continue
-
-            if not all(len(play.get('pitchIndex', [])) == 3 for play in half_plays):
-                continue
-
-            # top half = away bats, so home team is pitching; bottom = vice versa
-            pitching_side = 'home' if half == 'top' else 'away'
-            team_abbrev = box.get('teamInfo', {}).get(pitching_side, {}).get('abbreviation', '')
-            team_name = box.get('teamInfo', {}).get(pitching_side, {}).get('teamName', team_abbrev)
-            pitcher_name = half_plays[0].get('matchup', {}).get('pitcher', {}).get('fullName', '')
-            if not team_abbrev:
-                continue
-
-            patterns.append({
-                'team': team_abbrev,
-                'pattern': 'immaculate_inning',
-                'label': 'Immaculate Inning',
-                'description': (
-                    f'{pitcher_name} ({team_name}) threw an immaculate inning '
-                    f'in the {_ordinal(inning_num)} — 3 strikeouts on 9 pitches.'
-                ),
-            })
+        patterns.append({
+            'team': team_abbrev,
+            'pattern': 'immaculate_inning',
+            'label': 'Immaculate Inning',
+            'description': (
+                f'{pitcher_name} ({team_name}) threw an immaculate inning '
+                f'in the {_ordinal(half_inning.num)} — 3 strikeouts on 9 pitches.'
+            ),
+        })
 
     return patterns
 
@@ -1066,34 +821,20 @@ def _extract_position_player_pitching_pattern(box):
     '''
     patterns = []
 
-    for side in ('away', 'home'):
-        side_data = box.get(side, {})
-        pitchers = side_data.get('pitchers', [])
-        player_data = side_data.get('players', {})
-        team_abbrev = box.get('teamInfo', {}).get(side, {}).get('abbreviation', '')
-        team_name = box.get('teamInfo', {}).get(side, {}).get('teamName', team_abbrev)
-        if not team_abbrev:
+    for line in boxscore.iter_position_player_pitchers(box):
+        if not line.team_abbrev:
             continue
+        team_name = boxscore.team_name(box, line.side, default=line.team_abbrev)
+        primary_pos = boxscore.position_abbrev(line.player)
 
-        for pid in pitchers:
-            player_key = f'ID{pid}'
-            player = player_data.get(player_key, {})
-            primary_pos = player.get('position', {}).get('abbreviation', '')
-            all_pos = [pos.get('abbreviation', '') for pos in player.get('allPositions', [])]
-
-            # skip real pitchers — same guard as tier 1
-            if 'P' in all_pos or primary_pos == 'P':
-                continue
-
-            name = player.get('person', {}).get('fullName', f'Player {pid}')
-            patterns.append({
-                'team': team_abbrev,
-                'pattern': 'position_player_pitching',
-                'label': 'Position Player Pitching',
-                'description': (
-                    f'{name} ({team_name}), normally a {primary_pos}, '
-                    f'took the mound.'
-                ),
-            })
+        patterns.append({
+            'team': line.team_abbrev,
+            'pattern': 'position_player_pitching',
+            'label': 'Position Player Pitching',
+            'description': (
+                f'{line.name} ({team_name}), normally a {primary_pos}, '
+                f'took the mound.'
+            ),
+        })
 
     return patterns

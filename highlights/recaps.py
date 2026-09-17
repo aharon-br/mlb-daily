@@ -8,6 +8,9 @@ so the recaps/ folder becomes a browsable archive of every day the bot ran
 
 import os
 
+from highlights import formatting
+from highlights.paths import repo_path
+
 
 def write_recap(date, games, top_lines, rare_events, summary):
     '''write a day's run output to recaps/{year}.md, newest entry first.
@@ -18,8 +21,7 @@ def write_recap(date, games, top_lines, rare_events, summary):
     rare_events — list of rare-event dicts from rarity.find_rare_events
     summary     — narrative string from narrative.write_summary if we are using AI summary writer
     '''
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    recaps_dir = os.path.join(repo_root, 'recaps')
+    recaps_dir = repo_path('recaps')
     os.makedirs(recaps_dir, exist_ok=True) 
     # make the recaps dir if its not there, this really only happens on the first run
     # but in case its been deleted or somethig it will start new
@@ -83,10 +85,7 @@ def _build_entry(date, games, top_lines, rare_events, summary):
     if rare_events:
         lines.append('**Notable events**')
         for event in rare_events:
-            if event.get('since') is not None:
-                lines.append(f'- {event["description"]} — _last seen: {event["since"]}_')
-            else:
-                lines.append(f'- {event["description"]}')
+            lines.append(f'- {formatting.event_line(event)}')
         lines.append('')
 
     # trailing separator so entries stack cleanly when prepended
