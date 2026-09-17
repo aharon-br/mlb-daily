@@ -15,6 +15,7 @@ call is made and the fallback plain-text summary is returned instead.
 
 import os
 import json
+import traceback
 
 
 # ---- constants --------------------------------------------------------------
@@ -111,7 +112,7 @@ def _fallback(date, games, top_lines, rare_events):
 
 # ---- main entry point -------------------------------------------------------
 
-def write_summary(date, games, top_lines, rare_events, ai_summary=False):
+def write_summary(date, games, top_lines, rare_events, ai_summary=False, degradations=None):
     '''generate the daily recap narrative, optionally via the claude api.
 
     the anthropic client is instantiated lazily inside this function — so
@@ -124,24 +125,37 @@ def write_summary(date, games, top_lines, rare_events, ai_summary=False):
     top_lines   — list of stat-line dicts from statlines.top_performances
     rare_events — list of verified rare-event dicts from rarity.find_rare_events
     ai_summary  — if False (default), skip the api call and return the fallback
+    degradations — optional list; when ai_summary was requested but we had to
+                  fall back, the reason is appended here so the caller can
+                  tell an intentional plain-text recap from a broken one
 
     returns a str — the narrative text, ready to embed in a slack message.
     if ai_summary is False or ANTHROPIC_API_KEY is not set, returns a plain
     bullet-point fallback. if the claude call fails, also falls back gracefully.
     '''
 
+    if degradations is None:
+        degradations = []
+
+    def _degrade(reason):
+        # only a *requested* narrative that didn't happen counts as degraded;
+        # ai_summary=false is a deliberate config, not a failure
+        print(f'narrative unavailable, using fallback: {reason}')
+        degradations.append(f'narrative fallback: {reason}')
+        return _fallback(date, games, top_lines, rare_events)
+
     api_key = os.environ.get('ANTHROPIC_API_KEY')
 
-    if not ai_summary or not api_key:
-        if ai_summary and not api_key:
-            print('warning: ai_summary=True but ANTHROPIC_API_KEY not set — using fallback')
+    if not ai_summary:
         return _fallback(date, games, top_lines, rare_events)
+
+    if not api_key:
+        return _degrade('ai_summary=True but ANTHROPIC_API_KEY is not set')
 
     try:
         import anthropic
-    except ImportError:
-        print('error: anthropic not installed — pip install anthropic')
-        return _fallback(date, games, top_lines, rare_events)
+    except ImportError as exc:
+        return _degrade(f'anthropic not installed ({exc}) — pip install anthropic')
 
     payload = _payload(date, games, top_lines, rare_events)
     payload_json = json.dumps(payload, sort_keys=True, default=str)
@@ -158,16 +172,19 @@ def write_summary(date, games, top_lines, rare_events, ai_summary=False):
             messages=[{'role': 'user', 'content': f'Write the recap.\n\n{payload_json}'}],
         )
 
-        text = response.content[0].text
-
-        if not text:
-            print('warning: model returned no text content, using fallback')
-            return _fallback(date, games, top_lines, rare_events)
-
-        print(f'narrative generated ({len(text)} chars)')
-        return _truncate(text)
-
     except Exception as exc:
-        print(f'claude api call failed: {exc}')
-        print('falling back to plain text summary')
-        return _fallback(date, games, top_lines, rare_events)
+        # network blips, quota, auth — all recoverable via the fallback, but
+        # print the traceback so a persistently broken key is diagnosable
+        traceback.print_exc()
+        return _degrade(f'claude api call failed: {type(exc).__name__}: {exc}')
+
+    if not response.content:
+        return _degrade('model returned an empty content list')
+
+    block = response.content[0]
+    text = block.text if block.type == 'text' else ''
+    if not text:
+        return _degrade(f'model returned no text content (first block: {block.type})')
+
+    print(f'narrative generated ({len(text)} chars)')
+    return _truncate(text)

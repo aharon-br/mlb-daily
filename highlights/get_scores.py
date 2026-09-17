@@ -30,6 +30,15 @@ before the official 'Final' change; 'Completed Early' covers rain-shortened game
 _FINAL_STATUSES = {'Final', 'Game Over', 'Completed Early'}
 
 
+class MLBAPIError(RuntimeError):
+    '''raised when the MLB stats API is unreachable or returns unusable data.
+
+    distinct from "there were no games" — an empty result is a normal off-day,
+    an MLBAPIError means we could not find out either way and the caller must
+    not treat the day as quiet.
+    '''
+
+
 def yesterday():
     '''returns the date object for yesterday — convenience wrapper so callers
     don't have to import datetime themselves.'''
@@ -51,11 +60,14 @@ def games_for_date(target_date):
 
     # statsapi.schedule() accepts date strings in YYYY-MM-DD format.
     # passing start_date == end_date gives us just that one day.
+    # a failure here must propagate: returning [] would be indistinguishable
+    # from a genuine off-day and the run would report "no games" and exit 0.
     try:
         raw_schedule = statsapi.schedule(start_date=target_date.isoformat(), end_date=target_date.isoformat())
     except Exception as error:
-        print(f'statsapi.schedule() raised for {target_date.isoformat()}: {error}')
-        return []
+        raise MLBAPIError(
+            f'statsapi.schedule() failed for {target_date.isoformat()}: {error}'
+        ) from error
 
     if not raw_schedule:
         print(f'no games found in schedule for {target_date.isoformat()}')
@@ -119,7 +131,10 @@ def box_score(game_pk):
     '''statsapi.boxscore_data() is a higher-level helper that parses the raw
     /game/{gamePk}/boxscore endpoint into something more python useable.
     it puts player stats into the roster structure so we dont have to form it back'''
-    data = statsapi.boxscore_data(game_pk)
+    try:
+        data = statsapi.boxscore_data(game_pk)
+    except Exception as error:
+        raise MLBAPIError(f'boxscore_data({game_pk}) failed: {error}') from error
 
     '''abbreviated sample of what the return looks like
     {
@@ -154,10 +169,17 @@ def box_score(game_pk):
       },
     }'''
 
-    # check that the object is what we expect in case the API returns bad data or
-    # partial data for weird edge cases
+    # a payload without both sides is unusable: every rarity/statline check
+    # reads box['home'] and box['away'], so silently passing it downstream
+    # produces an empty, wrong-looking recap instead of a visible failure.
+    if not isinstance(data, dict):
+        raise MLBAPIError(
+            f'box score for {game_pk} is {type(data).__name__}, expected dict'
+        )
     if 'home' not in data or 'away' not in data:
-        print(f'    box score for {game_pk} missing home/away — got keys: {list(data.keys())}')
+        raise MLBAPIError(
+            f'box score for {game_pk} missing home/away — got keys: {sorted(data.keys())}'
+        )
 
     return data
 
@@ -184,7 +206,10 @@ def get_play_by_play(game_pk):
     # full live feed json — batting, pitching, fielding events, pitch-by-pitch, all of it.
     # we only pull liveData.plays because the full feed also includes box score
     # data we already have, and the json can get quite large.
-    raw_play_by_play = statsapi.get('game', {'gamePk': game_pk})
+    try:
+        raw_play_by_play = statsapi.get('game', {'gamePk': game_pk})
+    except Exception as error:
+        raise MLBAPIError(f'live feed request for game {game_pk} failed: {error}') from error
 
     # sample plays shape (abbreviated):
     # {
@@ -206,13 +231,18 @@ def get_play_by_play(game_pk):
     #   ],
     # }
 
-    # get into the nested data — the api always has this format returned for finished games
+    # get into the nested data — the api always has this format returned for
+    # finished games. a missing plays block means the pitch-level rarity checks
+    # (immaculate inning, inning HR patterns, walk-off slam) can't run, so this
+    # is a hard failure rather than a quietly empty dict.
+    if not isinstance(raw_play_by_play, dict):
+        raise MLBAPIError(
+            f'live feed for game {game_pk} is {type(raw_play_by_play).__name__}, expected dict'
+        )
     try:
         plays = raw_play_by_play['liveData']['plays']
-    except KeyError:
-        # return an empty object so we don't have to check for None all the time
-        print(f'    no liveData.plays found for game {game_pk}')
-        plays = {}
+    except (KeyError, TypeError) as error:
+        raise MLBAPIError(f'no liveData.plays in live feed for game {game_pk}') from error
 
     return plays
 

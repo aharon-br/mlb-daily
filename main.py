@@ -21,6 +21,7 @@ you can run locally if you want:
 
 import os
 import sys
+import traceback
 from datetime import date, timedelta
 
 # highlights is our set of local packages — each sub-module owns one concern
@@ -30,6 +31,20 @@ from highlights import rarity         # detects rare / notable events
 from highlights import narrative      # calls the AI to write the story
 from highlights import slack as slack_send  # posts to slack
 from highlights import recaps         # writes the local daily recap file
+
+
+class PartialRunError(RuntimeError):
+    '''raised at the end of a run that produced output but lost part of it.
+
+    the recap and slack post already happened by the time this is raised; it
+    exists so a degraded run (missing games, skipped rarity tier, silent AI
+    fallback) shows up red in the Actions log instead of passing quietly.
+    '''
+
+    def __init__(self, degradations):
+        self.degradations = list(degradations)
+        joined = '; '.join(self.degradations)
+        super().__init__(f'run completed with {len(self.degradations)} degradation(s): {joined}')
 
 
 # ---- helper functions
@@ -78,6 +93,11 @@ def main():
     target = date.today() - timedelta(days=1)
     print(f'getting games for {target}')
 
+    # non-fatal problems collected as we go. anything in here still lets the
+    # run produce a recap, but the process exits non-zero at the end so the
+    # Actions run is marked failed instead of looking like a clean day.
+    degradations = []
+
     # read the optionals once here so the prints below are accurate
     ai_summary = os.environ.get('AI_SUMMARY', 'false').lower() == 'true'
     print(f'ai_summary={ai_summary}')
@@ -112,9 +132,23 @@ def main():
     box_scores = []
     for game in games:
         # gamePk is the MLB stats API's  integer game identifier - unique across all time
-        box = get_scores.box_score(game['game_id'])
-        box['play_by_play'] = get_scores.get_play_by_play(game['game_id'])
+        game_pk = game['game_id']
+        # one flaky game shouldn't cost us the other fourteen, but it also
+        # shouldn't vanish — record it so the run reports the gap.
+        try:
+            box = get_scores.box_score(game_pk)
+            box['play_by_play'] = get_scores.get_play_by_play(game_pk)
+        except get_scores.MLBAPIError as exc:
+            print(f'could not load game {game_pk}: {exc}')
+            degradations.append(f'game {game_pk} skipped: {exc}')
+            continue
         box_scores.append(box)
+
+    if not box_scores:
+        # every game failed to load — there is nothing honest to post
+        raise RuntimeError(
+            f'could not load any of the {len(games)} final game(s) from the MLB API'
+        )
 
     # 3. make the top-performer stat lines.
     # statlines.top_performances ranks every individual batting/pitching
@@ -129,7 +163,7 @@ def main():
     # no-hitters, perfect games, cycles, 4-HR games, immaculate innings.
     # most days this returns an empty list — that's fine.
     print('scanning for rare events...')
-    rare_events = rarity.find_rare_events(box_scores, target)
+    rare_events = rarity.find_rare_events(box_scores, target, degradations=degradations)
     if rare_events:
         # log the names so they're searchable in the Actions run log
         event_names = [event.get('label', 'unknown') for event in rare_events]
@@ -149,20 +183,12 @@ def main():
         top_lines=top_lines,
         rare_events=rare_events,
         ai_summary=ai_summary,
+        degradations=degradations,
     )
 
-    # step 6: post to slack.
-    # slack_send.post formats everything into slack blocks and fires the webhook.
-    # keeping the send separate from the narrative lets us reuse
-    # narrative.write_summary in tests without a slack side-effect.
-    if post_to_slack:
-        print('posting to slack...')
-        slack_send.post(summary, top_lines, rare_events)
-    else:
-        print('slack disabled — skipping post')
-
-    # step 7: write the daily recap file.
-    # always runs regardless of post_to_slack — it's the local record.
+    # step 6: write the daily recap file.
+    # runs before the slack post so a webhook failure can't cost us the local
+    # record — the recap is written on every run that had games, as documented.
     # the Actions workflow commits recaps/ alongside the season ledger each day.
     print('writing daily recap...')
     recaps.write_recap(
@@ -173,6 +199,22 @@ def main():
         summary=summary,
     )
 
+    # step 7: post to slack.
+    # slack_send.post formats everything into slack blocks and fires the webhook.
+    # keeping the send separate from the narrative lets us reuse
+    # narrative.write_summary in tests without a slack side-effect.
+    # failures propagate: a recap nobody saw is a failed run.
+    if post_to_slack:
+        print('posting to slack...')
+        slack_send.post(summary, top_lines, rare_events)
+    else:
+        print('slack disabled — skipping post')
+
+    if degradations:
+        # outputs are already written, so surface the partial failures last and
+        # let the caller decide — __main__ turns this into a non-zero exit.
+        raise PartialRunError(degradations)
+
     print('done')
 
 
@@ -180,5 +222,10 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as exc:
-        print(f'fatal error: {exc}')
+        # full traceback, not just str(exc) — a bare message from deep inside
+        # pandas or requests is close to useless when triaging a 6 AM cron run
+        print('fatal error:', exc)
+        traceback.print_exc()
+        # best-effort alert to the error channel; post_error never raises
+        slack_send.post_error(f'{type(exc).__name__}: {exc}')
         sys.exit(1)
