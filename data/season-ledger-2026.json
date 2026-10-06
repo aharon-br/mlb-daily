@@ -82,7 +82,7 @@
       "name": "Paul Goldschmidt",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-09-30"
+      "last_date": "2026-10-05"
     },
     "592450": {
       "name": "Aaron Judge",
@@ -93,8 +93,8 @@
     "641355": {
       "name": "Cody Bellinger",
       "team": "Yankees",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "642708": {
       "name": "Amed Rosario",
@@ -112,19 +112,19 @@
       "name": "Jazz Chisholm Jr.",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "641857": {
       "name": "Ryan McMahon",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "663757": {
       "name": "Trent Grisham",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "680474": {
       "name": "Max Schuemann",
@@ -267,20 +267,20 @@
     "680757": {
       "name": "Steven Kwan",
       "team": "Guardians",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "800050": {
       "name": "Chase DeLauter",
       "team": "Guardians",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "608070": {
       "name": "Jos\u00e9 Ram\u00edrez",
       "team": "Guardians",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "700932": {
       "name": "Kyle Manzardo",
@@ -297,14 +297,14 @@
     "683953": {
       "name": "Travis Bazzana",
       "team": "Guardians",
-      "streak": 1,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "677587": {
       "name": "Brayan Rocchio",
       "team": "Guardians",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "666310": {
       "name": "Bo Naylor",
@@ -435,8 +435,8 @@
     "663993": {
       "name": "Nathaniel Lowe",
       "team": "Guardians",
-      "streak": 3,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "663538": {
       "name": "Nico Hoerner",
@@ -945,8 +945,8 @@
     "689414": {
       "name": "Liam Hicks",
       "team": "Rays",
-      "streak": 3,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "666624": {
       "name": "Christopher Morel",
@@ -999,8 +999,8 @@
     "650490": {
       "name": "Yandy D\u00edaz",
       "team": "Rays",
-      "streak": 2,
-      "last_date": "2026-10-03"
+      "streak": 3,
+      "last_date": "2026-10-05"
     },
     "668723": {
       "name": "Ryan Vilade",
@@ -1017,20 +1017,20 @@
     "691406": {
       "name": "Junior Caminero",
       "team": "Rays",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "666018": {
       "name": "Jonathan Aranda",
       "team": "Rays",
-      "streak": 2,
-      "last_date": "2026-10-03"
+      "streak": 3,
+      "last_date": "2026-10-05"
     },
     "676356": {
       "name": "Jonny DeLuca",
       "team": "Rays",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "810938": {
       "name": "Ben Williamson",
@@ -1047,8 +1047,8 @@
     "802415": {
       "name": "Chandler Simpson",
       "team": "Rays",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "656775": {
       "name": "Cedric Mullins",
@@ -1060,7 +1060,7 @@
       "name": "Taylor Walls",
       "team": "Rays",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "680776": {
       "name": "Jarren Duran",
@@ -1324,7 +1324,7 @@
       "name": "Brenton Doyle",
       "team": "White Sox",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "678662": {
       "name": "Ezequiel Tovar",
@@ -1389,8 +1389,8 @@
     "666176": {
       "name": "Jo Adell",
       "team": "Guardians",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "666139": {
       "name": "Josh Lowe",
@@ -1498,7 +1498,7 @@
       "name": "Luis Garc\u00eda Jr.",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "668904": {
       "name": "Royce Lewis",
@@ -1510,7 +1510,7 @@
       "name": "Angel Mart\u00ednez",
       "team": "Guardians",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "656555": {
       "name": "Rhys Hoskins",
@@ -1672,43 +1672,43 @@
       "name": "Sam Antonacci",
       "team": "White Sox",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "545341": {
       "name": "Randal Grichuk",
       "team": "White Sox",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "808959": {
       "name": "Munetaka Murakami",
       "team": "White Sox",
-      "streak": 1,
-      "last_date": "2026-10-03"
+      "streak": 2,
+      "last_date": "2026-10-05"
     },
     "678246": {
       "name": "Miguel Vargas",
       "team": "White Sox",
-      "streak": 1,
-      "last_date": "2026-10-03"
+      "streak": 2,
+      "last_date": "2026-10-05"
     },
     "695657": {
       "name": "Colson Montgomery",
       "team": "White Sox",
-      "streak": 1,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "805367": {
       "name": "Chase Meidroth",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "643217": {
       "name": "Andrew Benintendi",
       "team": "White Sox",
-      "streak": 1,
-      "last_date": "2026-09-30"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "672284": {
       "name": "Jarred Kelenic",
@@ -1719,8 +1719,8 @@
     "671976": {
       "name": "Tristan Peters",
       "team": "White Sox",
-      "streak": 3,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "691011": {
       "name": "Drew Romo",
@@ -1731,20 +1731,20 @@
     "700250": {
       "name": "Ben Rice",
       "team": "Yankees",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "682987": {
       "name": "Spencer Jones",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "669224": {
       "name": "Austin Wells",
       "team": "Yankees",
-      "streak": 3,
-      "last_date": "2026-10-03"
+      "streak": 4,
+      "last_date": "2026-10-05"
     },
     "694192": {
       "name": "Jackson Chourio",
@@ -2301,8 +2301,8 @@
     "672275": {
       "name": "Patrick Bailey",
       "team": "Guardians",
-      "streak": 1,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "656582": {
       "name": "Connor Joe",
@@ -2349,8 +2349,8 @@
     "680700": {
       "name": "Richie Palacios",
       "team": "Rays",
-      "streak": 1,
-      "last_date": "2026-10-03"
+      "streak": 2,
+      "last_date": "2026-10-05"
     },
     "664056": {
       "name": "Harrison Bader",
@@ -2715,8 +2715,8 @@
     "683748": {
       "name": "Victor Mesa Jr.",
       "team": "Rays",
-      "streak": 4,
-      "last_date": "2026-10-03"
+      "streak": 0,
+      "last_date": "2026-10-05"
     },
     "807747": {
       "name": "Rikuu Nishida",
@@ -2961,8 +2961,8 @@
     "695731": {
       "name": "Braden Montgomery",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "694249": {
       "name": "Cole Carrigg",
@@ -3177,8 +3177,8 @@
     "691019": {
       "name": "Kyle Teel",
       "team": "White Sox",
-      "streak": 0,
-      "last_date": "2026-10-03"
+      "streak": 1,
+      "last_date": "2026-10-05"
     },
     "649966": {
       "name": "Luis Ur\u00edas",
@@ -3502,7 +3502,7 @@
       "name": "George Lombard Jr.",
       "team": "Yankees",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "682663": {
       "name": "Agust\u00edn Ram\u00edrez",
@@ -3760,7 +3760,7 @@
       "name": "Tommy Pham",
       "team": "White Sox",
       "streak": 0,
-      "last_date": "2026-10-03"
+      "last_date": "2026-10-05"
     },
     "699115": {
       "name": "Carlos Jorge",
