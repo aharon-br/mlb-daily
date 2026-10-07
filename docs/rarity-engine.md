@@ -3,7 +3,9 @@
 the rarity engine (`highlights/rarity.py` + `highlights/corpus.py`) is what makes the service interesting.
 it's fully deterministic, and finds historically notable events from each day's box scores so the downstream AI call only has to write prose — it never invents facts or "first since" claims on its own.
 
-entry point: `find_rare_events(box_scores, target_date)` — returns a list of event dicts. each dict has `kind`, `label`, `description`, and `since`. callers don't need to know which tier produced a given event.
+entry point: `find_rare_events(box_scores, target_date, degradations=None)` — returns a list of event dicts. each dict has `kind`, `label`, `description`, and `since`. callers don't need to know which tier produced a given event.
+
+tier 2 and tier 3 still degrade rather than crash, but a skipped tier is no longer invisible: pass a list as `degradations` and each skip appends a one-line reason to it. `main.py` passes one and exits non-zero at the end of the run when it isn't empty, so a day that silently lost the ledger or the corpus shows up red instead of just short.
 
 ## the three tiers
 
