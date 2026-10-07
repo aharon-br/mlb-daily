@@ -27,7 +27,18 @@ _VALID_GAME_TYPES = {'R', 'P', 'F', 'D', 'L', 'W'}
 '''these are the status mlb uses for games that are fully done
 'Final' is the normal case; 'Game Over' appears briefly right after the final out
 before the official 'Final' change; 'Completed Early' covers rain-shortened games'''
-_FINAL_STATUSES = {'Final', 'Game Over', 'Completed Early'}
+FINAL_STATUSES = {'Final', 'Game Over', 'Completed Early'}
+
+
+def filter_final_games(games):
+    '''keep only games that reached a terminal state.
+
+    anything still in progress, postponed, or scheduled gets dropped — we
+    can't build a box score from an incomplete game. statsapi.schedule()
+    returns 'status' as a plain string (the detailedState), not a nested
+    dict, so we compare directly against the string value.
+    '''
+    return [game for game in games if game.get('status') in FINAL_STATUSES]
 
 
 def yesterday():
@@ -65,7 +76,7 @@ def games_for_date(target_date):
     is highly unlikely but possible west coast games are still live
     don't pull in in-progress scores and post incomplete box scores
     statsapi.schedule() returns 'status' as a plain string (the detailedState).'''
-    final_games = [game for game in raw_schedule if game.get('status') in _FINAL_STATUSES]
+    final_games = filter_final_games(raw_schedule)
 
     '''filter only meaningful game types
     spring training (E) and exhibition (S) games show up in the schedule
