@@ -72,7 +72,10 @@ _STATSAPI_TO_RETROSHEET = {
     'KC':  'KCA',  # Royals
     'TB':  'TBA',  # Rays
     'WSH': 'WAS',  # Nationals (current era; Montreal "MON" intentionally excluded)
-    'MIA': 'FLO',  # Marlins (corpus uses the original "FLO" franchise code)
+    # Marlins are intentionally NOT remapped: the corpus keys the modern
+    # franchise (2012-present) as "MIA" — identical to the StatsAPI abbrev — so
+    # identity passthrough joins the recent history. mapping to the pre-2012
+    # "FLO" code would strand every game 13 seasons in the past.
     'AZ':  'ARI',  # Diamondbacks (StatsAPI sometimes emits "AZ")
     'ATH': 'OAK',  # Athletics (post-relocation StatsAPI code; corpus is "OAK")
 }
