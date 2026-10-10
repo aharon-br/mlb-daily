@@ -11,3 +11,4 @@ build/
 venv/
 mlb-daily.bbprojectd
 .DS_Store
+public/
