@@ -1,17 +1,5 @@
 {
   "hitting_streaks": {
-    "100": {
-      "name": "Babe Testman",
-      "team": "Yankees",
-      "streak": 1,
-      "last_date": "2026-05-04"
-    },
-    "101": {
-      "name": "Lou Gehrig Jr",
-      "team": "Yankees",
-      "streak": 1,
-      "last_date": "2026-05-04"
-    },
     "607043": {
       "name": "Brandon Nimmo",
       "team": "Rangers",
@@ -3847,11 +3835,8 @@
       "last_date": "2026-10-07"
     }
   },
-  "no_hitter_teams": [
-    "Yankees"
-  ],
+  "no_hitter_teams": [],
   "season_firsts": {
-    "no_hitter": "2026-05-04",
     "cycle": "2026-06-15"
   }
 }

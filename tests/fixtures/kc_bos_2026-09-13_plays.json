@@ -1,0 +1,433 @@
+{
+ "note": "trimmed liveData.plays from KC @ BOS, 2026-09-13 (Payton Tolle immaculate 1st inning). playsByInning has no \"num\" key, same as the live feed.",
+ "teamInfo": {
+  "away": {
+   "id": 118,
+   "abbreviation": "KC",
+   "teamName": "Royals",
+   "shortName": "Kansas City"
+  },
+  "home": {
+   "id": 111,
+   "abbreviation": "BOS",
+   "teamName": "Red Sox",
+   "shortName": "Boston"
+  }
+ },
+ "play_by_play": {
+  "allPlays": [
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Nick Loftin"
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     4,
+     5,
+     7
+    ]
+   },
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Bobby Witt Jr."
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     3
+    ]
+   },
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Jac Caglianone"
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     3
+    ]
+   },
+   {
+    "result": {
+     "event": "Groundout"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Roman Anthony"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     3
+    ]
+   },
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Jahmai Jones"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   {
+    "result": {
+     "event": "Single"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Wilyer Abreu"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   {
+    "result": {
+     "event": "Walk"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Willson Contreras"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   {
+    "result": {
+     "event": "Groundout"
+    },
+    "about": {
+     "inning": 1,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Adley Rutschman"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Salvador Perez"
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   {
+    "result": {
+     "event": "Single"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Michael Massey"
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     3,
+     5,
+     6,
+     7
+    ]
+   },
+   {
+    "result": {
+     "event": "Lineout"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Matthew Lugo"
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1
+    ]
+   },
+   {
+    "result": {
+     "event": "Pop Out"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "top"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Isaac Collins"
+     },
+     "pitcher": {
+      "fullName": "Payton Tolle"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     3
+    ]
+   },
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Trevor Story"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     3,
+     4
+    ]
+   },
+   {
+    "result": {
+     "event": "Home Run"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Caleb Durbin"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0
+    ]
+   },
+   {
+    "result": {
+     "event": "Groundout"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Nick Sogard"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   {
+    "result": {
+     "event": "Strikeout"
+    },
+    "about": {
+     "inning": 2,
+     "halfInning": "bottom"
+    },
+    "matchup": {
+     "batter": {
+      "fullName": "Nate Eaton"
+     },
+     "pitcher": {
+      "fullName": "Noah Cameron"
+     }
+    },
+    "pitchIndex": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   }
+  ],
+  "playsByInning": [
+   {
+    "startIndex": 0,
+    "endIndex": 7,
+    "top": [
+     0,
+     1,
+     2
+    ],
+    "bottom": [
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   {
+    "startIndex": 8,
+    "endIndex": 15,
+    "top": [
+     8,
+     9,
+     10,
+     11
+    ],
+    "bottom": [
+     12,
+     13,
+     14,
+     15
+    ]
+   }
+  ]
+ }
+}

@@ -137,14 +137,14 @@ brew install chadwick   # macOS
 # https://github.com/chadwickbureau/chadwick/releases and put cwevent on your PATH
 ```
 
-run the full backfill (1918–2024, takes an hour or so as it downloads from the Chadwick Bureau's GitHub repo, parses with `cwevent`):
+run the full backfill (1918–2025, takes an hour or so as it downloads from the Chadwick Bureau's GitHub repo, parses with `cwevent`):
 ```bash
 python highlights/corpus.py
 ```
 
 or a specific year range:
 ```bash
-python highlights/corpus.py 2000 2024
+python highlights/corpus.py 2000 2025
 ```
 
 the parquet is written to `retrosheet-patterns.parquet` in the repo root. inspect it with duckdb or pandas, then commit.
