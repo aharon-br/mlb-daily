@@ -27,10 +27,19 @@ jobs:
 
       - name: Install chadwick
         run: |
-          # chadwick is not in the Ubuntu apt repos — install from GitHub releases
-          CHADWICK_VERSION=0.10.0
-          curl -sSL "https://github.com/chadwickbureau/chadwick/releases/download/v${CHADWICK_VERSION}/chadwick-${CHADWICK_VERSION}-linux-x86_64.tar.gz" \
-            | sudo tar -xz -C /usr/local --strip-components=1
+          # chadwick publishes no prebuilt linux binaries and apt's package is ancient (0.6.x),
+          # so build the current release from source
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool build-essential
+          git clone --depth 1 --branch v0.10.0 https://github.com/chadwickbureau/chadwick.git /tmp/chadwick \
+            || git clone --depth 1 https://github.com/chadwickbureau/chadwick.git /tmp/chadwick
+          cd /tmp/chadwick
+          autoreconf -i
+          ./configure
+          make -j"$(nproc)"
+          sudo make install
+          sudo ldconfig
+          cwevent -h || true
 
       - name: Install dependencies
         run: pip install -r requirements.txt
