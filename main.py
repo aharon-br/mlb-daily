@@ -14,6 +14,7 @@ you can run locally if you want:
                           narrative.write_summary; the module reads it directly)
   AI_SUMMARY            — optional; set to 'true' to call the AI narrative step.
                           defaults to false
+  TARGET_DATE           — optional; YYYY-MM-DD to recap instead of yesterday (backfills/reruns)
   POST_TO_SLACK         — optional; set to 'false' to skip the slack post.
                           the recap file is always written regardless of this flag,
                           as long as there were games to report (off-days exit early)
@@ -75,7 +76,12 @@ def main():
     # figure out which calendar date we want — yesterday in local time.
     # the workflow fires at 13:00 UTC (9 AM ET), which is long after
     # all west coast games could get done. "yesterday" is pretty clear at that point
-    target = date.today() - timedelta(days=1)
+    # TARGET_DATE=YYYY-MM-DD reruns or backfills a specific day (recaps are written in date order)
+    target_override = os.environ.get('TARGET_DATE', '').strip()
+    if target_override:
+        target = date.fromisoformat(target_override)
+    else:
+        target = date.today() - timedelta(days=1)
     print(f'getting games for {target}')
 
     # read the optionals once here so the prints below are accurate

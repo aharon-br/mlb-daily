@@ -65,14 +65,14 @@ _STATSAPI_TO_RETROSHEET = {
     'CHC': 'CHN',  # Cubs
     'CWS': 'CHA',  # White Sox
     'LAD': 'LAN',  # Dodgers
-    'LAA': 'ANA',  # Angels (current franchise code in corpus)
+    'LAA': 'LAA',  # Angels (see _FRANCHISE_CODES for CAL/ANA history)
     'STL': 'SLN',  # Cardinals
     'SF':  'SFN',  # Giants
     'SD':  'SDN',  # Padres
     'KC':  'KCA',  # Royals
     'TB':  'TBA',  # Rays
     'WSH': 'WAS',  # Nationals (current era; Montreal "MON" intentionally excluded)
-    'MIA': 'FLO',  # Marlins (corpus uses the original "FLO" franchise code)
+    'MIA': 'MIA',  # Marlins (corpus has FLO through 2011 and MIA from 2012; see _FRANCHISE_CODES)
     'AZ':  'ARI',  # Diamondbacks (StatsAPI sometimes emits "AZ")
     'ATH': 'OAK',  # Athletics (post-relocation StatsAPI code; corpus is "OAK")
 }
@@ -91,6 +91,19 @@ _PATTERN_MIN_GAP_DAYS = {
     'position_player_pitching': 365 * 3,
     'stolen_base_burst':        365 * 2,  # note: no corpus detector yet (see _extract_patterns)
 }
+
+
+# franchises whose retrosheet code changed over time. tier 3 looks across all of them, so
+# "last seen" covers the whole franchise history instead of only the current code's years.
+_FRANCHISE_CODES = {
+    'MIA': ['MIA', 'FLO'],         # Florida Marlins became the Miami Marlins in 2012
+    'LAA': ['LAA', 'ANA', 'CAL'],  # California Angels -> Anaheim Angels -> Los Angeles Angels
+}
+
+
+def _franchise_codes(abbrev):
+    '''every retrosheet code the club has used, current code first.'''
+    return _FRANCHISE_CODES.get(abbrev) or [_to_retrosheet_code(abbrev)]
 
 
 def _to_retrosheet_code(abbrev):
@@ -123,13 +136,22 @@ def find_rare_events(box_scores, target_date):
     for box in box_scores:
         # for each line of the box score, run through the checks later in here
         # if anything runs back, add to the events
-        events.extend(_check_cycle(box))
-        events.extend(_check_no_hitter(box))
-        events.extend(_check_immaculate_inning(box))
-        events.extend(_check_multi_hr_individual(box, threshold=3))
-        events.extend(_check_position_player_pitching(box))
-        events.extend(_check_double_digit_k(box))
-        events.extend(_check_shutout(box))
+        # each check is isolated: one bad box score or one buggy check must not
+        # skip the rest of the day (an uncaught error here used to fail the whole run)
+        for check in (
+            _check_cycle,
+            _check_no_hitter,
+            _check_immaculate_inning,
+            lambda b: _check_multi_hr_individual(b, threshold=3),
+            _check_position_player_pitching,
+            _check_double_digit_k,
+            _check_shutout,
+        ):
+            try:
+                events.extend(check(box))
+            except Exception as exception:
+                name = getattr(check, '__name__', 'check')
+                print(f'warning: tier 1 {name} failed, skipping: {exception}')
 
     # tier 2: season ledger from json
     # a read/write failure should just go missing, 
@@ -139,7 +161,7 @@ def find_rare_events(box_scores, target_date):
         # use the tier 1 events already processed to the _check_season_ledger function
         events.extend(ledger_events)  # add anything returned for season ledger to the 
         if new_ledger is not None:
-            _write_season_ledger(new_ledger)
+            _write_season_ledger(new_ledger, target_date.year)
     except Exception as exception:
         print(f'tier 2 season ledger unavailable, skipping: {exception}')
 
@@ -153,10 +175,10 @@ def find_rare_events(box_scores, target_date):
             # normalize the StatsAPI abbrev to the retrosheet code the corpus
             # is keyed by, otherwise mismatched franchises never join (#1 cause
             # of tier 3 going silent — see _STATSAPI_TO_RETROSHEET).
-            retro_team = _to_retrosheet_code(pattern['team'])
+            retro_teams = _franchise_codes(pattern['team'])
             # find all prior occurrences of this exact pattern for this team
             prior = corpus[
-                (corpus.team == retro_team) &
+                (corpus.team.isin(retro_teams)) &
                 (corpus.pattern == pattern['pattern']) &
                 (corpus.date < target_date)
             ]
@@ -170,6 +192,19 @@ def find_rare_events(box_scores, target_date):
                     pattern['pattern'], _DEFAULT_MIN_GAP_DAYS
                 )
                 if gap >= min_gap:
+                    # tier 1 already reported immaculate innings and position-player
+                    # pitching for this game. annotate that event with the "last seen"
+                    # date instead of listing the same thing twice.
+                    prefix = pattern['description'].split(')')[0]
+                    duplicate = next((
+                        e for e in events
+                        if e['kind'] == pattern['pattern']
+                        and e.get('since') is None
+                        and e['description'].startswith(prefix)
+                    ), None)
+                    if duplicate is not None:
+                        duplicate['since'] = last_seen.isoformat()
+                        continue
                     events.append({
                         'kind': pattern['pattern'],
                         'label': pattern['label'],
@@ -318,7 +353,12 @@ def _check_no_hitter(box):
                 # perfect game = no hits, no walks, no HBP
                 walks = stats.get('baseOnBalls', 0)
                 hbp   = stats.get('hitBatsmen', 0)
-                is_perfect = (walks == 0 and hbp == 0)
+                # a batter who reached on an error also ends a perfect game, and it shows up
+                # as a batter faced without a matching out
+                outs_recorded = round(innings_float * 3)
+                batters_faced = stats.get('battersFaced')
+                reached_other_way = (batters_faced is not None and batters_faced > outs_recorded)
+                is_perfect = (walks == 0 and hbp == 0 and not reached_other_way)
 
                 # label if it was perfect or a no-no
                 kind  = 'perfect_game' if is_perfect else 'no_hitter'
@@ -349,6 +389,25 @@ def _ordinal(num):
     return f'{num}{suffix}'
 
 
+def _inning_number(inning_data, all_plays, position):
+    '''work out which inning a playsByInning entry is.
+
+    the live feed's playsByInning entries have no "num" key (just startIndex, endIndex,
+    top, bottom, hits), so read the inning off the first play in the entry. position is the
+    entry's 1-based place in the list, used only if the plays can't tell us.
+    '''
+    num = inning_data.get('num')
+    if num:
+        return num
+    for half in ('top', 'bottom'):
+        for pi in inning_data.get(half, []):
+            if pi < len(all_plays):
+                inning = all_plays[pi].get('about', {}).get('inning')
+                if inning:
+                    return inning
+    return position
+
+
 def _check_immaculate_inning(box):
     '''detect an immaculate inning: 3 strikeouts on exactly 9 pitches in one half-inning.
 
@@ -363,8 +422,8 @@ def _check_immaculate_inning(box):
     plays_by_inning = plays_data.get('playsByInning', [])
     events = []
 
-    for inning_data in plays_by_inning:
-        inning_num = inning_data.get('num', '?')
+    for position, inning_data in enumerate(plays_by_inning, start=1):
+        inning_num = _inning_number(inning_data, all_plays, position)
         for half in ('top', 'bottom'):
             play_indices = inning_data.get(half, [])
             if len(play_indices) != 3:
@@ -608,7 +667,7 @@ def _check_season_ledger(box_scores, target_date, tier1_events=None):
     returns (events, new_ledger) — new_ledger is always non-None; the
     caller writes it back to disk unconditionally (cheap enough at once/day).
     '''
-    ledger = _load_season_ledger()
+    ledger = _load_season_ledger(target_date.year)
     streaks = ledger.get('hitting_streaks', {})
     no_hitter_teams = ledger.get('no_hitter_teams', [])
     season_firsts = ledger.get('season_firsts', {})
@@ -645,6 +704,11 @@ def _check_season_ledger(box_scores, target_date, tier1_events=None):
                 pid_str = str(pid)
                 prev = streaks.get(pid_str, {'streak': 0})
                 prev_streak = prev.get('streak', 0)
+
+                # this day (or a later one) is already counted: a rerun or backfill must not
+                # add the same game to a streak twice. ISO dates compare correctly as strings.
+                if prev.get('last_date', '') >= date_str:
+                    continue
 
                 if hits > 0:
                     new_streak = prev_streak + 1
@@ -729,15 +793,16 @@ def _check_season_ledger(box_scores, target_date, tier1_events=None):
     return (events, new_ledger)
 
 
-def _load_season_ledger():
+def _load_season_ledger(year=None):
     '''read the season ledger JSON from a local file.
 
     returns an empty dict if the file doesn't exist yet (start of season).
 
     local path: data/season-ledger-{year}.json (relative to repo root)
     using the year in the filename means it auto-resets each season.
+    year is the season of the day being recapped (defaults to the current year).
     '''
-    year = datetime.date.today().year
+    year = year or datetime.date.today().year
     path = os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         'data',
@@ -749,7 +814,7 @@ def _load_season_ledger():
         return json.load(fh)
 
 
-def _write_season_ledger(ledger):
+def _write_season_ledger(ledger, year=None):
     '''write the updated season ledger back to a local file.
 
     we overwrite the whole file each time — it's small (a few KB) and
@@ -757,7 +822,7 @@ def _write_season_ledger(ledger):
     concurrent writes are theoretically possible but in practice this
     function only runs once per day, so it's fine.
     '''
-    year = datetime.date.today().year
+    year = year or datetime.date.today().year
     data_dir = os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         'data',
@@ -799,6 +864,18 @@ def _load_pattern_corpus():
     datafile['date'] = pandas.to_datetime(datafile['date']).dt.date
     print(f'loaded pattern corpus: {len(datafile):,} rows')
     return datafile
+
+
+def _safely(extractor, box):
+    '''run one tier 3 extractor, returning no patterns if it fails.
+
+    one bad box score or one buggy extractor shouldn't cost the other patterns.
+    '''
+    try:
+        return extractor(box)
+    except Exception as exception:
+        print(f'warning: tier 3 {extractor.__name__} failed, skipping: {exception}')
+        return []
 
 
 def _extract_patterns(box_scores):
@@ -845,21 +922,21 @@ def _extract_patterns(box_scores):
         # to find consecutive HRs in the same half-inning. check both sides at
         # once since play-by-play is structured by inning, not by batting team.
         ## TO DO
-        patterns.extend(_extract_inning_hr_patterns(box))
+        patterns.extend(_safely(_extract_inning_hr_patterns, box))
 
         # walk_off_grand_slam: home team hits a bases-loaded walk-off HR.
         # needs play-by-play to know baserunner state at the moment of the HR.
-        patterns.extend(_extract_walk_off_grand_slam(box))
+        patterns.extend(_safely(_extract_walk_off_grand_slam, box))
 
         # immaculate_inning: 3 Ks on exactly 9 pitches in a half-inning.
         # tier 1 already fires an event for this; here we emit the pattern
         # tuple so tier 3 can attach a "first time since X" label to it.
         ## TO DO
-        patterns.extend(_extract_immaculate_inning_pattern(box))
+        patterns.extend(_safely(_extract_immaculate_inning_pattern, box))
 
         # position_player_pitching: a non-pitcher takes the mound.
         # tier 1 already fires an event; tier 3 gives us the historical gap.
-        patterns.extend(_extract_position_player_pitching_pattern(box))
+        patterns.extend(_safely(_extract_position_player_pitching_pattern, box))
 
     return patterns
 
@@ -883,8 +960,8 @@ def _extract_inning_hr_patterns(box):
     all_plays = plays_data.get('allPlays', [])
     plays_by_inning = plays_data.get('playsByInning', [])
 
-    for inning_data in plays_by_inning:
-        inning_num = inning_data.get('num', '?')
+    for position, inning_data in enumerate(plays_by_inning, start=1):
+        inning_num = _inning_number(inning_data, all_plays, position)
         for half in ('top', 'bottom'):
             play_indices = inning_data.get(half, [])
             half_plays = [all_plays[pi] for pi in play_indices if pi < len(all_plays)]
@@ -987,7 +1064,13 @@ def _extract_walk_off_grand_slam(box):
         on_second = '2B' in occupied
         on_third  = '3B' in occupied
 
-        if on_first and on_second and on_third:
+        # a slam in the last bottom half only ends the game if it's the final play and puts
+        # the home team ahead. a team down by 4+ that hits a slam keeps playing.
+        result = play.get('result', {})
+        is_final_play = play is bottom_plays[-1]
+        took_lead = result.get('homeScore', 0) > result.get('awayScore', 0)
+
+        if on_first and on_second and on_third and is_final_play and took_lead:
             batter_name = matchup.get('batter', {}).get('fullName', '')
             patterns.append({
                 'team': home_abbrev,
@@ -1019,8 +1102,8 @@ def _extract_immaculate_inning_pattern(box):
     all_plays = plays_data.get('allPlays', [])
     plays_by_inning = plays_data.get('playsByInning', [])
 
-    for inning_data in plays_by_inning:
-        inning_num = inning_data.get('num', '?')
+    for position, inning_data in enumerate(plays_by_inning, start=1):
+        inning_num = _inning_number(inning_data, all_plays, position)
         for half in ('top', 'bottom'):
             play_indices = inning_data.get(half, [])
             if len(play_indices) != 3:

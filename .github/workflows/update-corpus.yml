@@ -8,7 +8,7 @@ on:
         default: "1918"
       end_year:
         description: "Last year to include"
-        default: "2024"
+        default: "2025"
 
 jobs:
   build:

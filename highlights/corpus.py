@@ -40,8 +40,8 @@ cwevent column reference (used with -n flag for named headers):
   base1_run_id    — runner on first (empty string = nobody)
   base2_run_id    — runner on second
   base3_run_id    — runner on third
-  home_score_ct   — home team's cumulative score after this play
-  away_score_ct   — visiting team's cumulative score after this play
+  home_score_ct   — home team's score at the start of this play (before its runs count)
+  away_score_ct   — visiting team's score at the start of this play
   pitch_seq_tx    — pitch-by-pitch sequence string (S=swinging K, C=called K, etc.)
   pit_start_fl    — T if pitcher is the game starter (extended field)
 
@@ -258,7 +258,7 @@ def _load_events_for_year(year):
         return df
 
 
-def build_pattern_corpus(start_year=1918, end_year=2024, out_path='retrosheet-patterns.parquet'):
+def build_pattern_corpus(start_year=1918, end_year=2025, out_path='retrosheet-patterns.parquet'):
     '''one-time backfill: scan all retrosheet event data from start_year through
     end_year, detect interesting patterns, write to parquet locally.
 
@@ -463,11 +463,19 @@ def _detect_three_hr_inning(game_df, game_id):
 
 
 def _detect_walk_off_grand_slam(game_df, game_id):
-    '''walk_off_grand_slam: a home run with the bases loaded in the final half-inning
-    that wins the game for the home team when they were trailing by 1-4 runs.
+    '''walk_off_grand_slam: a bases-loaded home run that ends the game and wins it for
+    the home team.
 
     we use BASE1_RUN_ID, BASE2_RUN_ID, BASE3_RUN_ID to detect bases loaded.
-    HOME_SCORE_CT and AWAY_SCORE_CT are cumulative scores after each play.
+    cwevent's HOME_SCORE_CT and AWAY_SCORE_CT are the score at the START of the play
+    (before the home run's runs count), so the slam scores 4 on top of home_before.
+
+    it is a walk-off only if all of these hold:
+      * it is the very last batting event of the game (the game ends on the swing).
+        this is what separates it from a slam in the home team's last turn at bat
+        when they were already ahead and the game ended after the top of the 9th.
+      * the home team was tied or trailing by up to 3 before the swing, so the slam
+        puts them ahead. trailing by exactly 4 only ties it and the game goes on.
     '''
     results = []
 
@@ -475,43 +483,34 @@ def _detect_walk_off_grand_slam(game_df, game_id):
     if not base_cols.issubset(set(game_df.columns)):
         return results
 
-    home_bats = game_df[game_df['BAT_HOME_ID'].astype(int) == 1]
-    if home_bats.empty:
+    ordered = game_df.sort_values('EVENT_ID', kind='stable') if 'EVENT_ID' in game_df.columns else game_df
+    last = ordered.iloc[-1]
+
+    if int(last['BAT_HOME_ID']) != 1 or int(last['EVENT_CD']) != EVENT_HR:
         return results
 
-    final_inning = home_bats['INN_CT'].astype(int).max()
-    final_half = home_bats[home_bats['INN_CT'].astype(int) == final_inning]
+    b1 = str(last.get('BASE1_RUN_ID', '')).strip()
+    b2 = str(last.get('BASE2_RUN_ID', '')).strip()
+    b3 = str(last.get('BASE3_RUN_ID', '')).strip()
+    # pandas reads empty cells as NaN, which str() turns into 'nan'
+    if not all(r and r.lower() != 'nan' for r in (b1, b2, b3)):
+        return results
 
-    for _, row in final_half.iterrows():
-        if int(row['EVENT_CD']) != EVENT_HR:
-            continue
+    home_before = int(last['HOME_SCORE_CT'])
+    away_before = int(last['AWAY_SCORE_CT'])
+    deficit = away_before - home_before
 
-        b1 = str(row.get('BASE1_RUN_ID', '')).strip()
-        b2 = str(row.get('BASE2_RUN_ID', '')).strip()
-        b3 = str(row.get('BASE3_RUN_ID', '')).strip()
-        if not (b1 and b2 and b3):
-            continue
-
-        home_after = int(row['HOME_SCORE_CT'])
-        away_after = int(row['AWAY_SCORE_CT'])
-        # grand slams always score exactly 4 runs (batter + 3 runners on base),
-        # so subtracting 4 is always correct for a true grand slam.
-        home_before = home_after - 4
-        deficit = away_after - home_before
-
-        if home_after > away_after and 1 <= deficit <= 4:
-            team = row['batting_team']
-            date = row['date']
-            batter = row['BAT_ID']
-
-            results.append({
-                'date': date,
-                'team': team,
-                'pattern': 'walk_off_grand_slam',
-                'description': (f'{batter} ({team}) walk-off grand slam in the bottom of inning '
-                                f'{final_inning}, trailing {deficit} before the swing — {game_id}'),
-                'game_id': game_id,
-            })
+    if 0 <= deficit <= 3:
+        team = last['batting_team']
+        inning = int(last['INN_CT'])
+        results.append({
+            'date': last['date'],
+            'team': team,
+            'pattern': 'walk_off_grand_slam',
+            'description': (f'{last["BAT_ID"]} ({team}) walk-off grand slam in the bottom of inning '
+                            f'{inning}, {"tied" if deficit == 0 else f"trailing {deficit}"} before the swing — {game_id}'),
+            'game_id': game_id,
+        })
 
     return results
 
@@ -556,21 +555,29 @@ def _detect_immaculate_inning(game_df, game_id):
                 break
 
             # pitch sequence alphabet (Retrosheet spec):
-            #   S = swinging strike,  C = called strike,  K = third strike (swinging)
-            #   T = foul tip completing the strikeout — counts as a strike
-            #   B = ball,  F = foul ball,  H = hit-by-pitch — any of these disqualify
-            #   > + * 1 2 3 N V = non-pitch annotations (runner events, pitchout
-            #     context flags, etc.) — we ignore these when validating pitch count
-            pitches_only = [ch for ch in seq if ch in 'SCKT']
-            non_strike = [ch for ch in seq if ch not in 'SCKT>+*123NV']
+            #   strikes:  C called, S swinging, K unknown type, T foul tip, M missed bunt,
+            #             Q swinging on pitchout, plus fouls F, L (foul bunt), R (foul on
+            #             pitchout), O (foul tip on bunt)
+            #   balls:    B, I (intentional), P (pitchout), V, plus H (hit by pitch)
+            #   X / Y     ball put into play
+            #   > + * . 1 2 3 N — annotations for runner moves, no pitch, etc. (ignored)
+            # a foul with fewer than 2 strikes is still a strike, so "FFS" is a 3-pitch
+            # strikeout. what matters is: every pitch is a strike, there are exactly 3,
+            # and the third is a strike that actually ends the at-bat (a foul can't).
+            pitches_only = [ch for ch in seq if ch in 'CSKTMQFLRO']
+            non_strike = [ch for ch in seq if ch not in 'CSKTMQFLRO>+*.123N']
 
             if non_strike:
                 all_9_pitches = False
                 break
 
-            if len(pitches_only) != 3:
+            if len(pitches_only) != 3 or pitches_only[-1] not in 'CSKTMQ':
                 all_9_pitches = False
                 break
+
+        # the same pitcher has to get all three
+        if all_9_pitches and strikeout_rows['PIT_ID'].nunique() != 1:
+            all_9_pitches = False
 
         if all_9_pitches:
             pitcher = strikeout_rows.iloc[0]['PIT_ID']
@@ -743,7 +750,7 @@ if __name__ == '__main__':
         print(f'building corpus for {start}-{end}')
         build_pattern_corpus(start_year=start, end_year=end, out_path=out_path)
     else:
-        print('building full corpus 1918-2024 (this will take a while...)')
+        print('building full corpus 1918-2025 (this will take a while...)')
         build_pattern_corpus(out_path=out_path)
 
     print(f'corpus written to {out_path} — commit it to the repo to make it available to the daily workflow')

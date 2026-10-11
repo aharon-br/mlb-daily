@@ -200,11 +200,11 @@ brew install chadwick   # macOS
 then run the backfill (takes an hour or so — downloads from the Chadwick Bureau's GitHub mirror, parses with `cwevent`):
 
 ```bash
-# full backfill 1918-2024
+# full backfill 1918-2025
 python highlights/corpus.py
 
 # or a specific year range
-python highlights/corpus.py 2000 2024
+python highlights/corpus.py 2000 2025
 ```
 
 the parquet is written to `retrosheet-patterns.parquet` in the repo root. commit it when you're happy with it.
